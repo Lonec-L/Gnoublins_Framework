@@ -1,59 +1,11 @@
 import * as THREE from 'three';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { addObjectsToScene } from './addObjectsToScene.mjs';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-var mtlLoader = new MTLLoader();
-
-mtlLoader.load("models/armaturka/armaturka.mtl", function (materials) {
-
-    materials.preload();
-
-    var objLoader = new OBJLoader();
-    objLoader.setMaterials(materials);
-    objLoader.load(
-        'models/armaturka/armaturka.obj',
-        function (object) {
-            object.rotation.y = Math.PI;
-            object.position.z = 4.5;
-            console.log(object);
-            for (let i = 0; i < object.children.length; i++) {
-                if (object.children[i].name === "kazalec_1") {
-                    //object.children[i].setPosition(0.198229, 0.086486, -0.045737);
-                    //object.children[i].position = new THREE.Vector3(0.198229, 0.086486, -0.045737);
-                    object.kazalec_1_pos = new THREE.Vector3(0.198229, -0.045737, 0.086486);
-                    object.update = function () {
-                        object.children[i].position.sub(object.kazalec_1_pos);
-                        object.children[i].position.applyAxisAngle(new THREE.Vector3(0, 0, 1), 0.01);
-                        object.children[i].position.add(object.kazalec_1_pos);
-
-                        object.children[i].rotateOnAxis(new THREE.Vector3(0, 0, 1), 0.01);
-                    }
-                }
-                else if (object.children[i].name === "Lučka_gradbišče") {
-                    object.children[i].onClicked = function () {
-                        object.children[i].material.color.set(0xff0000);
-                    }
-                }
-            }
-            scene.add(object);
-
-        }, function (xhr) {
-
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-
-        },
-        // called when loading has errors
-        function (error) {
-
-            console.log('An error happened');
-
-        }
-    );
-
-});
+//here we add all our objects like this example
+addObjectsToScene(scene);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
@@ -116,10 +68,10 @@ function onDocumentMouseDown(e) {
 
     console.log(intersects);
 
-    for (let i = 0; i < intersects.length; i++) {
-
-        intersects[i].object.onClicked();
-
+    if (intersects.length > 0) {
+        if (intersects[0].object.onClicked) {
+            intersects[0].object.onClicked();
+        }
     }
 }
 
