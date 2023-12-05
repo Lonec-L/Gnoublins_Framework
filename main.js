@@ -12,7 +12,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(0, 1, 1); //default; light shining from top
+light.position.set(0, 5, 5); //default; light shining from top
 light.castShadow = true; // default false
 scene.add(light);
 
