@@ -1,18 +1,21 @@
 import * as THREE from 'three';
 import { addObjectsToScene } from './addObjectsToScene.mjs';
+import { GUI } from 'dat.gui';
 
 const scene = new THREE.Scene();
+var gui = new GUI();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const cameraRotationSpeed = 0.007;
 camera.rotate_x_animation = 0;
 camera.rotate_y_animation = 0;
 camera.position.z = 5;
+camera.toggle = false;
 
 
 var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-addObjectsToScene(scene);
+addObjectsToScene(scene, gui);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
@@ -79,8 +82,8 @@ function onDocumentMouseDown(e) {
 }
 
 function onDocumentMouseMove(e) {
-    console.log(e.x);
-    console.log(e.y);
+
+    //on the 15% edge of screen we move camera to the direction
 
     if (e.x > 0.85 * width && e.x < width) {
         camera.rotate_x_animation = -cameraRotationSpeed;
@@ -99,8 +102,13 @@ function onDocumentMouseMove(e) {
 
 }
 
+/*function onDocumentKeyDown(e) {
+    console.log(e.key);
+}*/
+
 document.addEventListener('mousemove', onDocumentMouseMove, false);
 document.addEventListener('mousedown', onDocumentMouseDown, false);
+//document.addEventListener('keydown', onDocumentKeyDown, false);
 
 document.addEventListener("mouseleave", function (event) {
 
@@ -111,6 +119,22 @@ document.addEventListener("mouseleave", function (event) {
     }
 });
 
+addEvent(document, "keypress", function (e) {
+    if (e.key == "c") {
+        camera.toggle = !camera.toggle;
+    }
+});
+
+function addEvent(element, eventName, callback) {
+    if (element.addEventListener) {
+        element.addEventListener(eventName, callback, false);
+    } else if (element.attachEvent) {
+        element.attachEvent("on" + eventName, callback);
+    } else {
+        element["on" + eventName] = callback;
+    }
+}
+
 function render() {
     requestAnimationFrame(render);
     for (let i = 0; i < scene.children.length; i++) {
@@ -118,8 +142,10 @@ function render() {
             scene.children[i].update();
         }
     }
-    camera.rotation.y += camera.rotate_x_animation;
-    camera.rotation.x += camera.rotate_y_animation;
+    if (camera.toggle) {
+        camera.rotation.y += camera.rotate_x_animation;
+        camera.rotation.x += camera.rotate_y_animation;
+    }
     renderer.render(scene, camera);
 }
 render();
