@@ -1,25 +1,33 @@
-import { loadDashboard } from './model_inits/armaturka_init.mjs';
+import { loadDashboard } from './model_inits/dashboard_init.mjs';
 import { loadMiddleStorage } from './model_inits/middle_storage_init.mjs';
+import { loadPanel } from './model_inits/panel_init.mjs';
+
+const addObject = async (scene, gui, objectName, loadFunction) => {
+    var object = await loadFunction();
+    if (object == undefined) {
+        console.error("Object " + objectName + " is undefined");
+        return;
+    }
+    object.visible = true;
+    scene.add(object);
+    gui.add(object, 'visible').name(objectName).onFinishChange(async function (value) {
+        if (!value) {
+            if (object.deInit) {
+                object.deInit();
+            }
+            object.removeFromParent();
+        } else {
+            if (object.init) {
+                object.init();
+            }
+            scene.add(object);
+        }
+    });
+
+}
 
 export const addObjectsToScene = async (scene, gui) => {
-    var middle_storage = await loadMiddleStorage()
-    middle_storage.visible = false;
-
-    var dashboard = await loadDashboard();
-    dashboard.visible = false;
-
-    gui.add(middle_storage, 'visible').name("Middle storage").onFinishChange(async function (value) {
-        if (!value) {
-            middle_storage.deInit();
-        } else {
-            scene.add(middle_storage);
-        }
-    });
-    gui.add(dashboard, 'visible').name("Dashboard").onFinishChange(async function (value) {
-        if (!value) {
-            dashboard.deInit();
-        } else {
-            scene.add(dashboard);
-        }
-    });
+    addObject(scene, gui, "Dashboard", loadDashboard);
+    addObject(scene, gui, "Middle storage", loadMiddleStorage);
+    addObject(scene, gui, "Panel", loadPanel);
 }

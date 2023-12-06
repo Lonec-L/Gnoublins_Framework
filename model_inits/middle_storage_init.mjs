@@ -1,13 +1,14 @@
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { loadObject } from '../utils/loadObject.mjs';
 import * as THREE from 'three';
 
 const init = function (object) {
 
-    object.position.z = 4;
-    object.rotation.x = Math.PI / 2 + Math.PI / 6;
-    object.rotation.y = Math.PI * 3 / 2;
-    object.rotation.z = Math.PI / 2;
+    object.position.z = 1.75;
+    object.position.y = -1.15;
+    object.position.x = 0.8;
+    object.rotation.y = Math.PI;
+
+    object.scale.set(1.5, 1.5, 1.5);
 
     for (let i = 0; i < object.children.length; i++) {
         if (object.children[i].name === "Lid") {
@@ -50,41 +51,16 @@ const init = function (object) {
     }
     object.castShadow = true;
     object.receiveShadow = true;
-
-    object.deInit = function () {
-        object.removeFromParent();
-    }
 }
 
-const load = () => new Promise((resolve, reject) => {
-    var mtlLoader = new MTLLoader();
-
-    mtlLoader.load("models/middle_storage/car_storage_part.mtl", function (materials) {
-
-        materials.preload();
-
-        var objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load(
-            'models/middle_storage/car_storage_part.obj',
-            function (object) {
-                resolve(object);
-            }, function (xhr) {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            // called when loading has errors
-            function (error) {
-                console.log('An error happened');
-                console.error(error);
-            }
-        );
-
-    });
-});
-
 export const loadMiddleStorage = async () => {
-    var storage = await load();
-    init(storage)
-    console.log(storage);
-    return storage;
+    try {
+        var storage = await loadObject("models/middle_storage/car_storage_part.obj", "models/middle_storage/car_storage_part.mtl");
+        init(storage)
+        console.log(storage);
+        return storage;
+    } catch (e) {
+        console.error(e);
+    }
+    return;
 }

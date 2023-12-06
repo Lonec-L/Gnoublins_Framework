@@ -8,7 +8,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const cameraRotationSpeed = 0.007;
 camera.rotate_x_animation = 0;
 camera.rotate_y_animation = 0;
-camera.position.z = 5;
+camera.position.z = 1.5;
 camera.toggle = false;
 
 
@@ -36,13 +36,13 @@ document.body.appendChild(renderer.domElement);
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 
-const planeGeometry = new THREE.BoxGeometry(10, 0.1, 10);
-const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff })
-const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-plane.position.y = -1;
-plane.receiveShadow = true;
+// const planeGeometry = new THREE.BoxGeometry(10, 0.1, 10);
+// const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff })
+// const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+// plane.position.y = -1;
+// plane.receiveShadow = true;
 
-scene.add(plane);
+// scene.add(plane);
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -104,6 +104,14 @@ document.addEventListener("mouseleave", function (event) {
 addEvent(document, "keypress", function (e) {
     if (e.key == "c") {
         camera.toggle = !camera.toggle;
+    } else if (e.key == "w") {
+        camera.position.z -= 0.1;
+    } else if (e.key == "s") {
+        camera.position.z += 0.1;
+    } else if (e.key == "a") {
+        camera.position.x -= 0.1;
+    } else if (e.key == "d") {
+        camera.position.x += 0.1;
     }
 });
 
@@ -125,8 +133,8 @@ function render() {
         }
     }
     if (camera.toggle) {
-        camera.rotation.y += camera.rotate_x_animation;
-        camera.rotation.x += camera.rotate_y_animation;
+        camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), camera.rotate_x_animation);
+        camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), camera.rotate_y_animation);
     }
     renderer.render(scene, camera);
 }
