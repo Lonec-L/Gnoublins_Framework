@@ -45,11 +45,16 @@ const init = function (object) { // this function could be further split up into
         httpGetAsync("http://www.randomnumberapi.com/api/v1.0/random?min=10&max=140&count=1", function (response) {
             var value = JSON.parse(response)[0];
             object.speed = value;
-            console.log(value);
+            console.log("Speed from server: " + value);
         });
-        setTimeout(object.getRandomSpeed, 1000);
+        object.randomSpeedTimeoutID = setTimeout(object.getRandomSpeed, 1000);
     }
     object.getRandomSpeed();
+
+    object.deInit = function () {
+        object.removeFromParent();
+        clearTimeout(object.randomSpeedTimeoutID);
+    }
 }
 
 const load = () => new Promise((resolve, reject) => {
@@ -84,7 +89,7 @@ const load = () => new Promise((resolve, reject) => {
     });
 });
 
-export const loadArmaturka = async () => {
+export const loadDashboard = async () => {
     var armaturka = await load();
     init(armaturka)
     console.log(armaturka);

@@ -50,6 +50,10 @@ const init = function (object) {
     }
     object.castShadow = true;
     object.receiveShadow = true;
+
+    object.deInit = function () {
+        object.removeFromParent();
+    }
 }
 
 const load = () => new Promise((resolve, reject) => {
@@ -64,20 +68,14 @@ const load = () => new Promise((resolve, reject) => {
         objLoader.load(
             'models/middle_storage/car_storage_part.obj',
             function (object) {
-
                 resolve(object);
-
             }, function (xhr) {
-
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-
             },
             // called when loading has errors
             function (error) {
-
                 console.log('An error happened');
                 console.error(error);
-
             }
         );
 

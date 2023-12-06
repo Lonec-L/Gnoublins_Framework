@@ -35,28 +35,12 @@ document.body.appendChild(renderer.domElement);
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-cube.castShadow = true;
-//scene.add(cube);
-
-cube.update = function () {
-    this.rotation.x += 0.01;
-    this.rotation.y += 0.01;
-}
-
-cube.onClicked = function () {
-    this.material.color.set(0xff0000);
-}
 
 const planeGeometry = new THREE.BoxGeometry(10, 0.1, 10);
 const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff })
 const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.position.y = -1;
 plane.receiveShadow = true;
-
-plane.onClicked = function () {
-    this.material.color.set(0xff0000);
-}
 
 scene.add(plane);
 
@@ -106,14 +90,8 @@ function onDocumentMouseMove(e) {
 
 }
 
-/*function onDocumentKeyDown(e) {
-    console.log(e.key);
-}*/
-
 document.addEventListener('mousemove', onDocumentMouseMove, false);
 document.addEventListener('mousedown', onDocumentMouseDown, false);
-//document.addEventListener('keydown', onDocumentKeyDown, false);
-
 document.addEventListener("mouseleave", function (event) {
 
     if (event.clientY <= 0 || event.clientX <= 0 || (event.clientX >= window.innerWidth || event.clientY >= window.innerHeight)) {
