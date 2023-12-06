@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { addObjectsToScene } from './addObjectsToScene.mjs';
 import { GUI } from 'dat.gui';
+import { addEvent } from './utils/addEvent.mjs';
 
 const scene = new THREE.Scene();
 var gui = new GUI();
@@ -114,16 +115,6 @@ addEvent(document, "keypress", function (e) {
         camera.position.x += 0.1;
     }
 });
-
-function addEvent(element, eventName, callback) {
-    if (element.addEventListener) {
-        element.addEventListener(eventName, callback, false);
-    } else if (element.attachEvent) {
-        element.attachEvent("on" + eventName, callback);
-    } else {
-        element["on" + eventName] = callback;
-    }
-}
 
 function render() {
     requestAnimationFrame(render);
