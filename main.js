@@ -3,8 +3,15 @@ import { addObjectsToScene } from './addObjectsToScene.mjs';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const cameraRotationSpeed = 0.007;
+camera.rotate_x_animation = 0;
+camera.rotate_y_animation = 0;
+camera.position.z = 5;
 
-//here we add all our objects like this example
+
+var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
 addObjectsToScene(scene);
 
 const renderer = new THREE.WebGLRenderer();
@@ -50,10 +57,6 @@ plane.onClicked = function () {
 
 scene.add(plane);
 
-
-
-camera.position.z = 5;
-
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
@@ -79,7 +82,38 @@ function onDocumentMouseDown(e) {
     }
 }
 
+function onDocumentMouseMove(e) {
+    console.log(e.x);
+    console.log(e.y);
+
+    if (e.x > 0.85 * width && e.x < width) {
+        camera.rotate_x_animation = -cameraRotationSpeed;
+    } else if (e.x < 0.15 * width && e.x > 0) {
+        camera.rotate_x_animation = cameraRotationSpeed;
+    } else {
+        camera.rotate_x_animation = 0;
+    }
+    if (e.y > 0.85 * height) {
+        camera.rotate_y_animation = -cameraRotationSpeed;
+    } else if (e.y < 0.15 * height) {
+        camera.rotate_y_animation = cameraRotationSpeed;
+    } else {
+        camera.rotate_y_animation = 0;
+    }
+
+}
+
+document.addEventListener('mousemove', onDocumentMouseMove, false);
 document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+document.addEventListener("mouseleave", function (event) {
+
+    if (event.clientY <= 0 || event.clientX <= 0 || (event.clientX >= window.innerWidth || event.clientY >= window.innerHeight)) {
+
+        camera.rotate_x_animation = 0;
+        camera.rotate_y_animation = 0;
+    }
+});
 
 function render() {
     requestAnimationFrame(render);
@@ -88,6 +122,8 @@ function render() {
             scene.children[i].update();
         }
     }
+    camera.rotation.y += camera.rotate_x_animation;
+    camera.rotation.x += camera.rotate_y_animation;
     renderer.render(scene, camera);
 }
 render();

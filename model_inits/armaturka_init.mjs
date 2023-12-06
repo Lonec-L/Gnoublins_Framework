@@ -22,9 +22,7 @@ const init = function (object) { // this function could be further split up into
         }
         else if (object.children[i].name === "Lučka_gradbišče") {
             object.children[i].onClicked = function () {
-                console.log(object.children[i] instanceof THREE.Mesh)
                 object.children[i].material.color.set(0xff0000);
-                console.log("Nekaj");
             }
         }
     }
