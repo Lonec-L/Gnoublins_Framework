@@ -46,4 +46,4 @@ export const loadMyObject = async () => {
 6. You can aso declare your own methods and callbacks to implement aditional functionality to your model (API calls, keyboardEvent callbacks...).
 7. For omre examples look at already implemented objects and their init files.
 
-8. You can send me tips and tricks to this paypal: https://paypal/rizzler
+8. You can send me tips and tricks to this paypal: https://paypal.me/prlek
