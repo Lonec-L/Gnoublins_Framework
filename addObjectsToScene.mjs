@@ -4,6 +4,7 @@ import { loadPanel } from './model_inits/panel_init.mjs';
 import { loadBreak } from './model_inits/break_init.mjs';
 import { loadSeat } from './model_inits/car_seat_init.mjs';
 import { loadDisplay } from './model_inits/display_init.mjs';
+import { loadHandbrake } from './model_inits/handbrake_init.mjs';
 import { addObject } from './utils';
 
 export const addObjectsToScene = async (scene, gui) => {
