@@ -13,5 +13,6 @@ export const addObjectsToScene = async (scene, gui) => {
     addObject(scene, gui, "Break", loadBreak);
     addObject(scene, gui, "Seat", loadSeat);
     addObject(scene, gui, "Display", loadDisplay);
+    addObject(scene, gui, "Handbrake", loadHandbrake);
 }
 
