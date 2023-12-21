@@ -8,55 +8,76 @@ const init = function (object) { // this function could be further split up into
     object.position.y = -0.265;
     console.log(object.children);
     for (let i = 0; i < object.children.length; i++) {
-        if (object.children[i].name === "kazalec_1") {
-            object.kazalec_1_pos = new THREE.Vector3(0.198229, -0.045737, 0.086486);
+        if (object.children[i].name === "kazalec_1_red_pointer") {
+            object.pointer_1_pos = new THREE.Vector3(0.198229, -0.045737, 0.086486);
 
             object.children[i].rot_value = 0;
             object.children[i].rot_max = 2.30;
             object.children[i].rot_min = -2.30;
             object.speed = 0;
-            object.target_rotation = 0 - 2.30;
+            object.rpm = 0;
+            object.children[i].target_rotation = 0 - 2.30;
 
-            object.kazalec_1 = function () {
-                if (object.speed > 10 && object.speed < 140) {
-                    object.target_rotation = ((object.speed - 10) / 130) * 4.60 - 2.30;
+            object.pointer_1 = function () {
+                if (object.speed > 10 && object.speed < 131) {
+                    object.children[i].target_rotation = ((object.speed - 10) / 130) * 4.60 - 2.30;
                 }
-                if (Math.abs(object.target_rotation - object.children[i].rotation.z) > 0.001) {
-                    var rotateBy = (object.target_rotation - object.children[i].rotation.z) / 30;
-                    object.children[i].position.sub(object.kazalec_1_pos);
+                if (Math.abs(object.children[i].target_rotation - object.children[i].rotation.z) > 0.001) {
+                    var rotateBy = (object.children[i].target_rotation - object.children[i].rotation.z) / 30;
+                    object.children[i].position.sub(object.pointer_1_pos);
                     object.children[i].position.applyAxisAngle(new THREE.Vector3(0, 0, 1), rotateBy);
-                    object.children[i].position.add(object.kazalec_1_pos);
+                    object.children[i].position.add(object.pointer_1_pos);
 
                     object.children[i].rotateOnAxis(new THREE.Vector3(0, 0, 1), rotateBy);
                 }
             }
         }
-        else if (object.children[i].name === "Lučka_gradbišče") {
-            object.children[i].onClicked = function () {
-                object.children[i].material.color.set(0xff0000);
+        else if (object.children[i].name === "kazalec_2_red_pointer") {
+            object.pointer_2_pos = new THREE.Vector3(-0.198229, -0.045737, 0.086486);
+
+            object.children[i].rot_value = 0;
+            object.children[i].rot_max = Math.PI * 0.5;
+            object.children[i].rot_min = -Math.PI;
+            object.speed = 0;
+            object.rpm = 0;
+            object.children[i].target_rotation = 0 - 1 * Math.PI;
+
+            object.pointer_2 = function () {
+                if (object.rpm > 0 && object.rpm < 8000) {
+                    object.children[i].target_rotation = ((object.rpm - 0) / 8000) * 1.45 * Math.PI - 1 * Math.PI;
+                }
+                if (Math.abs(object.children[i].target_rotation - object.children[i].rotation.z) > 0.001) {
+                    var rotateBy = (object.children[i].target_rotation - object.children[i].rotation.z) / 30;
+                    object.children[i].position.sub(object.pointer_2_pos);
+                    object.children[i].position.applyAxisAngle(new THREE.Vector3(0, 0, 1), rotateBy);
+                    object.children[i].position.add(object.pointer_2_pos);
+
+                    object.children[i].rotateOnAxis(new THREE.Vector3(0, 0, 1), rotateBy);
+                }
             }
         }
     }
+
     object.update = function () {
-        object.kazalec_1()
+        object.pointer_1()
+        object.pointer_2()
     }
 
-    object.getRandomSpeed = function () {
-        httpGetAsync("http://www.randomnumberapi.com/api/v1.0/random?min=10&max=140&count=1", function (response) {
-            var value = JSON.parse(response)[0];
-            object.speed = value;
-            console.log("Speed from server: " + value);
+    object.getData = function () {
+        httpGetAsync("http://localhost:3011/data", function (response) {
+            object.speed = JSON.parse(response).data[1];
+            object.rpm = JSON.parse(response).data[3];
         });
-        object.randomSpeedTimeoutID = setTimeout(object.getRandomSpeed, 1000);
+        object.dataTimeoutID = setTimeout(object.getData, 333);
     }
-    object.getRandomSpeed();
+    object.getData();
 
     object.init = function () {
-        object.randomSpeedTimeoutID = setTimeout(object.getRandomSpeed, 1000);
+        object.dataTimeoutID = setTimeout(object.getData, 333);
     }
 
     object.deInit = function () {
-        clearTimeout(object.randomSpeedTimeoutID);
+        clearTimeout(object.dataTimeoutID);
     }
 }
 
