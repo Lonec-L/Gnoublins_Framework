@@ -44,6 +44,10 @@ const init = function (object) {
 
     // Will update the texture
     object.update = function () {
+        if (object.roadSigns.length < 11) {
+            return;
+        }
+
         const paddingX = 25;
         const paddingY = 50;
 
