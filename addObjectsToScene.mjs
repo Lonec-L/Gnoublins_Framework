@@ -6,6 +6,7 @@ import { loadSeat } from './model_inits/car_seat_init.mjs';
 import { loadDisplay } from './model_inits/display_init.mjs';
 import { loadGasPedal } from './model_inits/gas_pedal_init.mjs';
 import { loadHandbrake } from './model_inits/handbrake_init.mjs';
+import { loadClutchPedal } from './model_inits/clutch_pedal_init.mjs';
 import { addObject } from './utils';
 
 export const addObjectsToScene = async (scene, gui) => {
@@ -17,5 +18,6 @@ export const addObjectsToScene = async (scene, gui) => {
     addObject(scene, gui, "Display", loadDisplay);
     addObject(scene, gui, "Gas Pedal", loadGasPedal);
     addObject(scene, gui, "Handbrake", loadHandbrake);
+    addObject(scene, gui, "Clutch Pedal", loadClutchPedal);
 }
 
