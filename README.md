@@ -44,6 +44,6 @@ export const loadMyObject = async () => {
    - object.deInit() is called when object is removed from scene
    - for keyboard events please use addEvent function from utils. Example is on line `105` in main.js
 6. You can aso declare your own methods and callbacks to implement aditional functionality to your model (API calls, keyboardEvent callbacks...).
-7. For omre examples look at already implemented objects and their init files.
+7. For more examples look at already implemented objects and their init files.
 
 8. You can send me tips and tricks to this paypal: https://paypal.me/prlek
