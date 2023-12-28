@@ -8,7 +8,7 @@ const init = function (object) { // this function could be further split up into
     object.position.y = -0.265;
     console.log(object.children);
     for (let i = 0; i < object.children.length; i++) {
-        if (object.children[i].name === "kazalec_1_red_pointer") {
+        if (object.children[i].name === "kazalec_1") {
             object.pointer_1_pos = new THREE.Vector3(0.198229, -0.045737, 0.086486);
 
             object.children[i].rot_value = 0;
@@ -32,7 +32,12 @@ const init = function (object) { // this function could be further split up into
                 }
             }
         }
-        else if (object.children[i].name === "kazalec_2_red_pointer") {
+        else if (object.children[i].name === "lucka_gradbisce") {
+            object.children[i].onClicked = function () {
+                object.children[i].material.color.set(0xff0000);
+            }
+        }
+        else if (object.children[i].name === "kazalec_2") {
             object.pointer_2_pos = new THREE.Vector3(-0.198229, -0.045737, 0.086486);
 
             object.children[i].rot_value = 0;
