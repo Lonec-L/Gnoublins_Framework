@@ -42,6 +42,8 @@ const textureLoader = new THREE.TextureLoader();
 
 const init = function (object) {
     object.update = function () {
+        object.getData();
+
         if (object.image) {
             textureLoader.load(object.image, function (texture) {
                 object.material.map = texture;
@@ -52,10 +54,10 @@ const init = function (object) {
     }
 
     object.getData = function () {
-        object.image = "http://localhost:3011/image";
+        const timestamp = new Date().getTime();
+        object.image = `http://localhost:3011/image?timestamp=${timestamp}`;
         object.dataTimeoutID = setTimeout(object.getData, 33.3);
     }
-    object.getData();
 
     object.init = function () {
         object.dataTimeoutID = setTimeout(object.getData, 33.3);

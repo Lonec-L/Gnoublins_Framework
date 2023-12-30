@@ -2,28 +2,32 @@ const express = require('express');
 const cors = require('cors');
 const { Kafka } = require('kafkajs');
 const Redis = require('ioredis');
-const path = require('path');
 
 const app = express();
 const port = 3011;
 
 app.use(cors());
 
-const consumer = new Kafka({
+const speedConsumer = new Kafka({
     brokers: ['localhost:9092'],
 }).consumer({ groupId: 'grp_api' });
 
-const consumer2 = new Kafka({
+const speedLimitsConsumer = new Kafka({
     brokers: ['localhost:9092'],
 }).consumer({ groupId: 'grp_api2' });
+
+const frameConsumer = new Kafka({
+    brokers: ['localhost:9092'],
+}).consumer({ groupId: 'grp_api3' });
 
 const redis = new Redis();
 
 let latestNumericalData = [0, 0, 0, 0];
+let latestFrame;
 
-consumer.subscribe({ topic: 'sensor_data', fromBeginning: false })
+speedConsumer.subscribe({ topic: 'sensor_data', fromBeginning: false })
     .then(() => {
-        return consumer.run({
+        return speedConsumer.run({
             eachMessage: ({ topic, partition, message }) => {
                 // Process the message and update the latest data
                 const data = message.value.toString().split('|');
@@ -36,9 +40,9 @@ consumer.subscribe({ topic: 'sensor_data', fromBeginning: false })
         console.error(error);
     });
 
-consumer2.subscribe({ topic: 'speed_limits_data', fromBeginning: false })
+speedLimitsConsumer.subscribe({ topic: 'speed_limits_data', fromBeginning: false })
     .then(() => {
-        return consumer2.run({
+        return speedLimitsConsumer.run({
             eachMessage: ({ topic, partition, message }) => {
                 // Process the message and update the latest data
                 const data = message.value.toString().split('|');
@@ -51,26 +55,41 @@ consumer2.subscribe({ topic: 'speed_limits_data', fromBeginning: false })
         console.error(error);
     });
 
+frameConsumer.subscribe({ topic: 'frame_noticifation', fromBeginning: false })
+    .then(() => {
+        // Start the Kafka consumer for frames
+        return frameConsumer.run({
+            eachMessage: async ({ topic, partition, message }) => {
+                // Process the message and store the frame
+                const metadataAndFrame = message.value.toString().split('new_frame');
+                const metadata = JSON.parse(metadataAndFrame[1]);
+                const frameBuffer = await redis.getBuffer('frame_jpeg:latest');
+
+                latestFrame = { metadata, frameBuffer };
+            },
+        });
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
 app.get('/data', (req, res) => {
     res.json({ data: latestNumericalData });
 });
 
 app.get('/image', (req, res) => {
-    // TODO: Get the data from kafka/redis
-
-    try {
-        const imagePath = path.resolve(__dirname, '../models/surroundings/sampleBackground.jpg');
+    if (latestFrame && latestFrame.frameBuffer) {
+        const { metadata, frameBuffer } = latestFrame;
 
         res.setHeader('Content-Type', 'image/jpeg');
-        res.setHeader('Content-Disposition', 'inline; filename=image.jpg');
 
-        res.sendFile(imagePath);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
+        console.log('Sending frame: ', metadata);
+        
+        res.end(frameBuffer);
+    } else {
+        res.status(404).send('No frame available');
     }
 });
-
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
