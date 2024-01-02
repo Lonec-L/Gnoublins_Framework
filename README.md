@@ -5,6 +5,11 @@ npm install
 npx vite .
 ```
 
+To start api server (do this in separate terminal):
+```
+node ./api/server.js
+```
+
 ## Controls
 
 Camera: - press `C` to toggle camera rotation. Dragging mouse near the edge of the screen rotates the camera around. - to move around the scene use `WASD` keys on your keyboard.
