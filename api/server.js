@@ -15,6 +15,7 @@ app.get('/data', (req, res) => {
     numericalData[1] = Math.floor(Math.random() * 131);   // Speed
     numericalData[2] = Math.floor(Math.random() * 100);   // Driver score
     numericalData[3] = Math.floor(Math.random() * 8000);  // RPM
+    numericalData[4] = Math.floor(Math.random() * 4);     // Blinkers
 
     res.json({ data: numericalData });
 });
