@@ -19,6 +19,17 @@ app.get('/data', (req, res) => {
     res.json({ data: numericalData });
 });
 
+app.get('/dashboard_lights_data', (req, res) => {
+    // TODO: Get the data from kafka/redis
+
+    numericalData = [];
+    numericalData[0] = Math.floor(Math.random() * 2);     // Dashboard lights random
+    numericalData[1] = Math.floor(Math.random() * 2);     // Dashboard lights random
+    numericalData[2] = Math.floor(Math.random() * 2);     // Dashboard lights random
+
+    res.json({ data: numericalData });
+});
+
 app.get('/image', (req, res) => {
     // TODO: Get the data from kafka/redis
 
