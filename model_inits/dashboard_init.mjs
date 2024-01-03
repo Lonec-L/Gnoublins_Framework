@@ -33,8 +33,33 @@ const init = function (object) { // this function could be further split up into
             }
         }
         else if (object.children[i].name === "lucka_gradbisce") {
-            object.children[i].onClicked = function () {
-                object.children[i].material.color.set(0xff0000);
+            console.log(object.children[i].material.color)
+            object.construction_site = function () {
+                if (object.lights[0]) {
+                    object.children[i].material.color.set(0xfcfc03);
+                } else {
+                    object.children[i].material.color.set(0x9b8177)
+                }
+            }
+        }
+        else if (object.children[i].name === "lucka_luknje_na_cesti") {
+            object.holes_on_road = function () {
+                if (object.lights[1]) {
+                    object.children[i].material.color.set(0xfcfc03);
+                }
+                else {
+                    object.children[i].material.color.set(0x9b8177)
+                }
+            }
+        }
+        else if (object.children[i].name === "lucka_sos") {
+
+            object.sos = function () {
+                if (object.lights[2]) {
+                    object.children[i].material.color.set(0xff0000);
+                } else {
+                    object.children[i].material.color.set(0x9b8177)
+                }
             }
         }
         else if (object.children[i].name === "kazalec_2") {
@@ -66,12 +91,18 @@ const init = function (object) { // this function could be further split up into
     object.update = function () {
         object.pointer_1()
         object.pointer_2()
+        object.construction_site()
+        object.holes_on_road()
+        object.sos()
     }
 
     object.getData = function () {
         httpGetAsync("http://localhost:3011/data", function (response) {
             object.speed = JSON.parse(response).data[1];
             object.rpm = JSON.parse(response).data[3];
+        });
+        httpGetAsync("http://localhost:3011/dashboard_lights_data", function (response) {
+            object.lights = JSON.parse(response).data;
         });
         object.dataTimeoutID = setTimeout(object.getData, 333);
     }
