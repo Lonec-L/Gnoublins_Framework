@@ -33,6 +33,17 @@ const init = function (object) {
                         object.children[i].rotateOnAxis(new THREE.Vector3(-1, 0, 0), -0.160);
                         object.pos_ctr = 0;
                     }
+                    //ob pritisku sprozi snemanje na serverju:
+                    fetch('http://127.0.0.1:5000/start_recording', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'flag': true }),
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log('Success:', data))
+                    .catch(error => console.error('Error:', error));
              }
         }
 
