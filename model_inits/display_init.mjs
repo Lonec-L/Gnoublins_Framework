@@ -71,6 +71,21 @@ const init = async function (object) {
             document.body.removeChild(downloadLink);
         } else {
             console.log("Download cancelled by the user.");
+            const imageDataUrl = canvas.toDataURL('image/png');
+
+            if (window.confirm("Do you want to upload to server?")) {
+                            fetch('http://127.0.0.1:5000/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'image': imageDataUrl }),
+    })
+    .then(response => response.json())
+    .then(data => console.log('Success:', data))
+    .catch(error => console.error('Error:', error));
+                
+            }
         }
     }
 };
