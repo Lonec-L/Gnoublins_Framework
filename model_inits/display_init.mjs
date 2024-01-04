@@ -79,7 +79,7 @@ const init = async function (object) {
             const imageDataUrl = canvas.toDataURL('image/png');
 
             if (window.confirm("Do you want to upload to server?")) {
-                            fetch('http://127.0.0.1:5000/upload', {
+                    fetch('http://127.0.0.1:5000/upload', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -91,6 +91,22 @@ const init = async function (object) {
     .catch(error => console.error('Error:', error));
                 
             }
+            fetch('http://127.0.0.1:5000/get_result', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.detection == 'nemanja' || data.detection == 'dejan') {
+                    console.log('Welcome ' + data.detection + '!');
+                } 
+                else {
+                    console.log('Intruder alert!');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     }
 };
