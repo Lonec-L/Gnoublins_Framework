@@ -1,7 +1,7 @@
 import { loadObject } from '../utils/loadObject.mjs';
 import * as THREE from 'three';
 
-
+let izpis = "RADIO:OFF   AC:OFF   CONSUMPTION:7.9"; // Your variable
 const init = async function (object) {
     object.position.y = -0.28;
     object.position.z = 0.51;
@@ -9,7 +9,6 @@ const init = async function (object) {
     object.rotation.x = Math.PI / 2;
     object.rotation.y = Math.PI;
     object.scale.set(1.3, 1.3, 1.3);
-
 
 
 
@@ -39,6 +38,9 @@ const init = async function (object) {
         if (video.readyState >= video.HAVE_ENOUGH_DATA) {
             context.drawImage(video, 0, 0, 640, 360);
         }
+        context.font = "bold 30px Arial"; // Adjust the size as needed
+        context.fillStyle = "black"; // Text color
+        context.fillText(izpis, 10, 40,630);
 
         // Update the texture of the 3D object
         object.children[0].material.map = new THREE.CanvasTexture(canvas);
@@ -90,6 +92,13 @@ const init = async function (object) {
     }
 };
 
+export function updateIzpis(newText) {
+    izpis = newText;
+    // Add any other code you need to update in this file when izpis changes
+    // For example, if you need to update something in the 3D scene
+    object.izpis = izpis;
+}
+
     
 
 export const loadDisplay = async () => {
@@ -102,4 +111,3 @@ export const loadDisplay = async () => {
     }
     return;
 }
-loadDisplay('path/to/your/video.mp4');
