@@ -2,6 +2,7 @@ import { loadObject } from '../utils/loadObject.mjs';
 import * as THREE from 'three';
 
 let izpis = "RADIO:OFF   AC:OFF   CONSUMPTION:7.9"; // Your variable
+let recording = "";
 const init = async function (object) {
     object.position.y = -0.28;
     object.position.z = 0.51;
@@ -40,7 +41,9 @@ const init = async function (object) {
         }
         context.font = "bold 30px Arial"; // Adjust the size as needed
         context.fillStyle = "black"; // Text color
-        context.fillText(izpis, 10, 40,630);
+        context.fillText(izpis, 10, 40,610);
+        context.fillText(recording, 10, 80,610);
+
 
         // Update the texture of the 3D object
         object.children[0].material.map = new THREE.CanvasTexture(canvas);
@@ -92,11 +95,14 @@ const init = async function (object) {
     }
 };
 
-export function updateIzpis(newText) {
+export function updateIzpis(newText, recording1) {
+    if(newText != "") {
     izpis = newText;
-    // Add any other code you need to update in this file when izpis changes
-    // For example, if you need to update something in the 3D scene
-    object.izpis = izpis;
+    }
+
+    recording = recording1;
+
+
 }
 
     
