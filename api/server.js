@@ -16,6 +16,7 @@ app.get('/data', (req, res) => {
     numericalData[2] = Math.floor(Math.random() * 100);   // Driver score
     numericalData[3] = Math.floor(Math.random() * 8000);  // RPM
     numericalData[4] = Math.floor(Math.random() * 4);     // Blinkers
+    numericalData[5] = Math.floor(Math.random() * 9);    // Roadsign ID
 
     res.json({ data: numericalData });
 });
