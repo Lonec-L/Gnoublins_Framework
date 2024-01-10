@@ -96,9 +96,8 @@ const init = function (object) {
       const paddingY = 50;
       context.fillText("Voice command:", 20 + paddingX, 80 + paddingY);
       if (object.speed_limit > 6) {
-        speed_limit -= 3;
+        object.speed_limit -= 3;
       }
-      console.log("speed limit : " + object.speed_limit);
       context.fillText(object.voiceCommands[object.speed_limit], 20 + paddingX, 240 + paddingY);
     }
 

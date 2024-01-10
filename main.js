@@ -1,7 +1,8 @@
-import * as THREE from 'three';
-import { addObjectsToScene } from './addObjectsToScene.mjs';
-import { GUI } from 'dat.gui';
-import { addEvent } from './utils/addEvent.mjs';
+import * as THREE from "three";
+import { addObjectsToScene } from "./addObjectsToScene.mjs";
+import { GUI } from "dat.gui";
+import { addEvent } from "./utils/addEvent.mjs";
+import { Lensflare, LensflareElement } from "three/addons/objects/Lensflare.js";
 
 const scene = new THREE.Scene();
 var gui = new GUI();
@@ -11,7 +12,6 @@ camera.rotate_x_animation = 0;
 camera.rotate_y_animation = 0;
 camera.position.z = 1.5;
 camera.toggle = false;
-
 
 var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -30,7 +30,6 @@ scene.add(light);
 const alight = new THREE.AmbientLight(0x808080); // soft white light
 scene.add(alight);
 
-
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -48,85 +47,109 @@ const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
+const textureLoader = new THREE.TextureLoader();
+
+const textureFlare0 = textureLoader.load("textures/lensflare0.png");
+const textureFlare3 = textureLoader.load("textures/lensflare3.png");
+
+//addLight(0.55, 0.9, 0.5, 5000, 0, -1000);
+addLight(0.08, 0.8, 0.5, -12, 7, -10);
+//addLight(0.995, 0.5, 0.9, 5000, 5000, -1000);
+
+function addLight(h, s, l, x, y, z) {
+  const light = new THREE.PointLight(0xffffff, 1.5, 2000, 0);
+  light.color.setHSL(h, s, l);
+  light.position.set(x, y, z);
+  scene.add(light);
+
+  const lensflare = new Lensflare();
+  lensflare.addElement(new LensflareElement(textureFlare0, 600, 0, light.color));
+  lensflare.addElement(new LensflareElement(textureFlare3, 60, 0.6));
+  lensflare.addElement(new LensflareElement(textureFlare3, 70, 0.7));
+  lensflare.addElement(new LensflareElement(textureFlare3, 120, 0.9));
+  lensflare.addElement(new LensflareElement(textureFlare3, 70, 1));
+  light.add(lensflare);
+}
 
 function onDocumentMouseDown(e) {
-    e.preventDefault();
-    // update the picking ray with the camera and pointer position
+  e.preventDefault();
+  // update the picking ray with the camera and pointer position
 
-    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = - (e.clientY / window.innerHeight) * 2 + 1;
+  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
-    raycaster.setFromCamera(pointer, camera);
+  raycaster.setFromCamera(pointer, camera);
 
-    // calculate objects intersecting the picking ray
-    const intersects = raycaster.intersectObjects(scene.children);
+  // calculate objects intersecting the picking ray
+  const intersects = raycaster.intersectObjects(scene.children);
 
-    console.log(intersects);
+  console.log(intersects);
 
-    if (intersects.length > 0) {
-        if (intersects[0].object.onClicked) {
-            intersects[0].object.onClicked();
-        }
+  if (intersects.length > 0) {
+    if (intersects[0].object.onClicked) {
+      intersects[0].object.onClicked();
     }
+  }
 }
 
 function onDocumentMouseMove(e) {
+  //on the 15% edge of screen we move camera to the direction
 
-    //on the 15% edge of screen we move camera to the direction
-
-    if (e.x > 0.85 * width && e.x < width) {
-        camera.rotate_x_animation = -cameraRotationSpeed;
-    } else if (e.x < 0.15 * width && e.x > 0) {
-        camera.rotate_x_animation = cameraRotationSpeed;
-    } else {
-        camera.rotate_x_animation = 0;
-    }
-    if (e.y > 0.85 * height) {
-        camera.rotate_y_animation = -cameraRotationSpeed;
-    } else if (e.y < 0.15 * height) {
-        camera.rotate_y_animation = cameraRotationSpeed;
-    } else {
-        camera.rotate_y_animation = 0;
-    }
-
+  if (e.x > 0.85 * width && e.x < width) {
+    camera.rotate_x_animation = -cameraRotationSpeed;
+  } else if (e.x < 0.15 * width && e.x > 0) {
+    camera.rotate_x_animation = cameraRotationSpeed;
+  } else {
+    camera.rotate_x_animation = 0;
+  }
+  if (e.y > 0.85 * height) {
+    camera.rotate_y_animation = -cameraRotationSpeed;
+  } else if (e.y < 0.15 * height) {
+    camera.rotate_y_animation = cameraRotationSpeed;
+  } else {
+    camera.rotate_y_animation = 0;
+  }
 }
 
-document.addEventListener('mousemove', onDocumentMouseMove, false);
-document.addEventListener('mousedown', onDocumentMouseDown, false);
+document.addEventListener("mousemove", onDocumentMouseMove, false);
+document.addEventListener("mousedown", onDocumentMouseDown, false);
 document.addEventListener("mouseleave", function (event) {
-
-    if (event.clientY <= 0 || event.clientX <= 0 || (event.clientX >= window.innerWidth || event.clientY >= window.innerHeight)) {
-
-        camera.rotate_x_animation = 0;
-        camera.rotate_y_animation = 0;
-    }
+  if (
+    event.clientY <= 0 ||
+    event.clientX <= 0 ||
+    event.clientX >= window.innerWidth ||
+    event.clientY >= window.innerHeight
+  ) {
+    camera.rotate_x_animation = 0;
+    camera.rotate_y_animation = 0;
+  }
 });
 
 addEvent(document, "keypress", function (e) {
-    if (e.key == "c") {
-        camera.toggle = !camera.toggle;
-    } else if (e.key == "w") {
-        camera.position.z -= 0.1;
-    } else if (e.key == "s") {
-        camera.position.z += 0.1;
-    } else if (e.key == "a") {
-        camera.position.x -= 0.1;
-    } else if (e.key == "d") {
-        camera.position.x += 0.1;
-    }
+  if (e.key == "c") {
+    camera.toggle = !camera.toggle;
+  } else if (e.key == "w") {
+    camera.position.z -= 0.1;
+  } else if (e.key == "s") {
+    camera.position.z += 0.1;
+  } else if (e.key == "a") {
+    camera.position.x -= 0.1;
+  } else if (e.key == "d") {
+    camera.position.x += 0.1;
+  }
 });
 
 function render() {
-    requestAnimationFrame(render);
-    for (let i = 0; i < scene.children.length; i++) {
-        if (scene.children[i].update) {
-            scene.children[i].update();
-        }
+  requestAnimationFrame(render);
+  for (let i = 0; i < scene.children.length; i++) {
+    if (scene.children[i].update) {
+      scene.children[i].update();
     }
-    if (camera.toggle) {
-        camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), camera.rotate_x_animation);
-        camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), camera.rotate_y_animation);
-    }
-    renderer.render(scene, camera);
+  }
+  if (camera.toggle) {
+    camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), camera.rotate_x_animation);
+    camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), camera.rotate_y_animation);
+  }
+  renderer.render(scene, camera);
 }
 render();
