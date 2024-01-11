@@ -3,6 +3,10 @@ import { addObjectsToScene } from "./addObjectsToScene.mjs";
 import { GUI } from "dat.gui";
 import { addEvent } from "./utils/addEvent.mjs";
 import { Lensflare, LensflareElement } from "three/addons/objects/Lensflare.js";
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const scene = new THREE.Scene();
 var gui = new GUI();
@@ -55,6 +59,32 @@ const textureFlare3 = textureLoader.load("textures/lensflare3.png");
 //addLight(0.55, 0.9, 0.5, 5000, 0, -1000);
 addLight(0.08, 0.8, 0.5, -12, 7, -10);
 //addLight(0.995, 0.5, 0.9, 5000, 5000, -1000);
+
+
+const bloomParams = {
+  threshold: 0,
+  strength: 0.3,
+  radius: 0
+};
+
+const bloomFolder = gui.addFolder('Bloom Parameters');
+bloomFolder.add(bloomParams, 'threshold', 0, 1).name('Threshold').onChange(updateBloom);
+bloomFolder.add(bloomParams, 'strength', 0, 2).name('Strength').onChange(updateBloom);
+bloomFolder.add(bloomParams, 'radius', 0, 1).name('Radius').onChange(updateBloom);
+bloomFolder.open();
+
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+
+function updateBloom() {
+  bloomPass.threshold = bloomParams.threshold;
+  bloomPass.strength = bloomParams.strength;
+  bloomPass.radius = bloomParams.radius;
+}
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(bloomPass);
+composer.addPass(new OutputPass());
 
 function addLight(h, s, l, x, y, z) {
   const light = new THREE.PointLight(0xffffff, 1.5, 2000, 0);
@@ -150,6 +180,7 @@ function render() {
     camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), camera.rotate_x_animation);
     camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), camera.rotate_y_animation);
   }
-  renderer.render(scene, camera);
+  //renderer.render(scene, camera);
+  composer.render();
 }
 render();
