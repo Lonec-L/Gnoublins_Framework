@@ -10,10 +10,11 @@ const init = function (object) {
   object.rotation.y = Math.PI;
   object.scale.set(1.3, 1.3, 1.3);
 
-  object.screens = ["SpeedLimit", "VoiceCommands"];
+  object.screens = ["SpeedLimit", "VoiceCommands", "DetectedRoadSigns"];
   object.screenIndex = 0;
   object.roadSigns = [];
   object.voiceCommands = ["Pause", "Skip", "Continue", "Play Song", "Mute", "Louder", "Quieter"];
+  object.roadSignsAI = [];
 
   // Load an image
   const image = new Image();
@@ -57,6 +58,17 @@ const init = function (object) {
     object.roadSigns.push(
       context.getImageData((8 + 32) * scaleFactor, 194 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor)
     );
+
+    object.roadSignsAI.push(context.getImageData((8) * scaleFactor, 194 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor));//30
+    object.roadSignsAI.push(context.getImageData((8 + 32) * scaleFactor, 194 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor));//40
+    object.roadSignsAI.push(context.getImageData((8 + 129) * scaleFactor, 194 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor));//70
+    object.roadSignsAI.push(context.getImageData((8 + 161) * scaleFactor, 194 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor));//80
+    object.roadSignsAI.push(context.getImageData((5) * scaleFactor, 158 * scaleFactor, 35 * scaleFactor, 35 * scaleFactor));//give away
+    object.roadSignsAI.push(context.getImageData((8 + 257) * scaleFactor, 123 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor));//no turn left
+    object.roadSignsAI.push(context.getImageData((8 + 289) * scaleFactor, 123 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor));//no turn right
+    object.roadSignsAI.push(context.getImageData((8 + 161) * scaleFactor, 298 * scaleFactor, 33 * scaleFactor, 33 * scaleFactor));//priority road
+
+
   };
 
   //Change display screen when clicked
@@ -99,6 +111,12 @@ const init = function (object) {
         object.speed_limit -= 3;
       }
       context.fillText(object.voiceCommands[object.speed_limit], 20 + paddingX, 240 + paddingY);
+    } else if (object.screens[object.screenIndex] == "DetectedRoadSigns") {
+      const paddingX = 25;
+      const paddingY = 50;
+      context.fillText("Sign Detected:", 20 + paddingX, 80 + paddingY);
+      context.putImageData(object.roadSignsAI[object.roadSignsID], 640 - 120 * 2 + paddingX, paddingY);
+
     }
 
     object.children[0].material.map = new THREE.CanvasTexture(canvas);
@@ -111,6 +129,7 @@ const init = function (object) {
       object.speed = JSON.parse(response).data[1];
       object.driver_score = JSON.parse(response).data[2];
       object.rpm = JSON.parse(response).data[3];
+      object.roadSignsID = JSON.parse(response).data[5];
     });
     object.dataTimeoutID = setTimeout(object.getData, 333);
   };
