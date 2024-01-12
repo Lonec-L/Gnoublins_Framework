@@ -21,15 +21,32 @@ app.get('/data', (req, res) => {
     res.json({ data: numericalData });
 });
 
+const mqtt = require("mqtt");
+
+const clientId = "Gnoublin" + Math.random().toString(36).substring(7);
+const client = mqtt.connect("mqtt://localhost:1883", { protocolId: 'MQTT', clientId: clientId });
+
+console.log("connected flag  " + client.connected);
+
+gnoublins_data = [];
+client.subscribe("Accel");
+client.on("message", (topic, message) => {
+    // message is Buffer
+    var t = topic.toString();
+    var m = message.toString();
+    if (t == "Accel") {
+        gnoublins_data[1] = parseInt(m[0]);
+        if (gnoublins_data[2] != 1)
+            gnoublins_data[2] = parseInt(m[1]);
+        console.log(gnoublins_data);
+    }
+});
+
 app.get('/dashboard_lights_data', (req, res) => {
     // TODO: Get the data from kafka/redis
+    gnoublins_data[0] = Math.floor(Math.random() * 2);     // Dashboard lights random
 
-    numericalData = [];
-    numericalData[0] = Math.floor(Math.random() * 2);     // Dashboard lights random
-    numericalData[1] = Math.floor(Math.random() * 2);     // Dashboard lights random
-    numericalData[2] = Math.floor(Math.random() * 2);     // Dashboard lights random
-
-    res.json({ data: numericalData });
+    res.json({ data: gnoublins_data });
 });
 
 app.get('/image', (req, res) => {
@@ -47,6 +64,8 @@ app.get('/image', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+
 
 
 app.listen(port, () => {

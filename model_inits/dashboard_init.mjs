@@ -2,11 +2,17 @@ import { loadObject } from '../utils/loadObject.mjs';
 import { httpGetAsync } from '../utils/httpGetAsync.mjs';
 import * as THREE from 'three';
 
+
 const init = function (object) { // this function could be further split up into seperate functions (register update, register onClick...)
     object.rotation.y = Math.PI;
     object.position.z = 0.4;
     object.position.y = -0.265;
     console.log(object.children);
+
+
+
+
+
     for (let i = 0; i < object.children.length; i++) {
         if (object.children[i].name === "kazalec_1") {
             object.pointer_1_pos = new THREE.Vector3(0.198229, -0.045737, 0.086486);
@@ -104,7 +110,7 @@ const init = function (object) { // this function could be further split up into
         httpGetAsync("http://localhost:3011/dashboard_lights_data", function (response) {
             object.lights = JSON.parse(response).data;
         });
-        object.dataTimeoutID = setTimeout(object.getData, 333);
+        object.dataTimeoutID = setTimeout(object.getData, 100);
     }
     object.getData();
 
