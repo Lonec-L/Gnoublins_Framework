@@ -89,6 +89,27 @@ const init = function (object) {
   var frame = new Image();
   frame.crossOrigin = "anonymous";
   var i = 0;
+
+  let izpis = "RADIO:OFF   AC:OFF   CONSUMPTION:7.9"; // Your variable
+  let recording = "";
+
+  // webcam
+  const video = document.createElement('video');
+  video.autoplay = true;
+  video.muted = true;
+
+  var streamConstraints = {
+    video: { width: 640, height: 360 },
+};
+navigator.mediaDevices
+    .getUserMedia(streamConstraints)
+    .then(gotStream)
+    .catch(function (e) {
+        alert("Could not access webcam!");
+    });
+    function gotStream(stream) {
+    video.srcObject = stream;
+    }
   // Will update the texture
   object.update = function () {
     var canvas = document.createElement("canvas");
@@ -132,6 +153,14 @@ const init = function (object) {
         frame.src = 'http://localhost:5000/get-image?n='+i;
         context.drawImage(frame, 0, 45, 640, 270);
         
+      }else if(object.YUGOmode == 1){
+        if (video.readyState >= video.HAVE_ENOUGH_DATA) {
+          context.drawImage(video, 0, 0, 640, 360);
+      }
+      context.font = "bold 30px Arial"; // Adjust the size as needed
+      context.fillStyle = "black"; // Text color
+      // context.fillText(izpis, 10, 40,610);
+      // context.fillText(recording, 10, 80,610);
       }
     }
 
