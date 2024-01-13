@@ -15,6 +15,7 @@ const cameraRotationSpeed = 0.03;
 camera.rotate_x_animation = 0;
 camera.rotate_y_animation = 0;
 camera.position.z = 1.5;
+camera.position.y = 0.2;
 camera.toggle = false;
 
 var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
