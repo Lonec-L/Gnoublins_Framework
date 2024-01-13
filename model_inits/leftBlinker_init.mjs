@@ -15,7 +15,7 @@ const init = function (object) {
             object.blinkers = JSON.parse(response).data[4];
         });
         object.dataTimeoutID = setTimeout(object.getData, 1500);
-        console.log(object.blinkers);
+        // console.log(object.blinkers);
 
         object.children[0].material.color.setHex(0xffffff);
 
@@ -29,7 +29,7 @@ const init = function (object) {
 export const loadLeftBlinker = async () => {
     try {
         var myObject = await loadObject("models/blinker/arrow.obj", "models/blinker/arrow.mtl");
-        console.log(myObject);
+        // console.log(myObject);
         init(myObject)
         return myObject;
     } catch (e) {

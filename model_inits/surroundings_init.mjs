@@ -10,6 +10,7 @@ const createCanvasPlane = function () {
         alphaTest: 0.5, // Adjust this value as needed
         map: createEmptyCanvasTexture()
     });
+    
     const planeMesh = new THREE.Mesh(geometry, material);
 
     planeMesh.position.x = 1;
