@@ -11,7 +11,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const scene = new THREE.Scene();
 var gui = new GUI();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const cameraRotationSpeed = 0.007;
+const cameraRotationSpeed = 0.03;
 camera.rotate_x_animation = 0;
 camera.rotate_y_animation = 0;
 camera.position.z = 1.5;
