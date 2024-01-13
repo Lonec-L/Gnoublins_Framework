@@ -152,7 +152,6 @@ navigator.mediaDevices
         i++;
         frame.src = 'http://localhost:5000/get-image?n='+i;
         context.drawImage(frame, 0, 45, 640, 270);
-        
       }else if(object.YUGOmode == 1){
         if (video.readyState >= video.HAVE_ENOUGH_DATA) {
           context.drawImage(video, 0, 0, 640, 360);
@@ -200,3 +199,10 @@ export const loadDisplay = async () => {
   }
   return;
 };
+
+export function updateIzpis(newText, recording1) {
+  if(newText != "") {
+  izpis = newText;
+  }
+  recording = recording1;
+}

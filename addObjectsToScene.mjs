@@ -10,6 +10,7 @@ import { loadClutchPedal } from './model_inits/clutch_pedal_init.mjs';
 import { loadSurroundings } from './model_inits/surroundings_init.mjs';
 import { loadLeftBlinker } from './model_inits/leftBlinker_init.mjs';
 import { loadRightBlinker } from './model_inits/rightBlinker_init.mjs';
+import { loadAirConditioning } from './model_inits/air_conditioning.mjs';
 import { loadReflector } from './reflector.mjs';
 import { addObject } from './utils';
 
@@ -27,5 +28,6 @@ export const addObjectsToScene = async (scene, gui) => {
     addObject(scene, gui, "Clutch Pedal", loadClutchPedal);
     addObject(scene, gui, "Surroundings", loadSurroundings);
     addObject(scene, gui, "Reflector", loadReflector);
+    addObject(scene, gui, "AC", loadAirConditioning);
 }
 
