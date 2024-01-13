@@ -10,11 +10,12 @@ const init = function (object) {
   object.rotation.y = Math.PI;
   object.scale.set(1.3, 1.3, 1.3);
 
-  object.screens = ["SpeedLimit", "VoiceCommands", "DetectedRoadSigns"];
+  object.screens = ["SpeedLimit", "VoiceCommands", "DetectedRoadSigns", "CollisionDetection"];
   object.screenIndex = 0;
   object.roadSigns = [];
   object.voiceCommands = ["Pause", "Skip", "Continue", "Play Song", "Mute", "Louder", "Quieter"];
   object.roadSignsAI = [];
+  object.YUGOmode = 0;
 
   // Load an image
   const image = new Image();
@@ -83,6 +84,11 @@ const init = function (object) {
     }
   }
 
+
+  //YUGO variables
+  var frame = new Image();
+  frame.crossOrigin = "anonymous";
+  var i = 0;
   // Will update the texture
   object.update = function () {
     var canvas = document.createElement("canvas");
@@ -117,11 +123,21 @@ const init = function (object) {
       context.fillText("Sign Detected:", 20 + paddingX, 80 + paddingY);
       context.putImageData(object.roadSignsAI[object.roadSignsID], 640 - 120 * 2 + paddingX, paddingY);
 
+    } else if (object.screens[object.screenIndex] == "CollisionDetection") {
+      const paddingX = 25;
+      const paddingY = 50;
+      context.fillText("Source Error", 20 + paddingX, 80 + paddingY);
+      if(object.YUGOmode == 0){
+        frame.src = 'http://localhost:5000/get-image?n='+Math.floor(Math.random()*10000000);
+        context.drawImage(frame, 0, 45, 640, 270);
+        
+      }
     }
 
     object.children[0].material.map = new THREE.CanvasTexture(canvas);
     object.children[0].material.map.needsUpdate = true;
   };
+  setInterval(() => object.update(), 1000 / 30);
 
   object.getData = function () {
     httpGetAsync("http://localhost:3011/data", function (response) {
