@@ -9,10 +9,8 @@ const init = function (object) {
 export const loadLeftHand = async () => {
     try {
         var leftHand = await loadObject("models/hands/leftHand.obj", "models/hands/leftHand.mtl");
-        
         init(leftHand)
         leftHand.visible = false;
-        console.log(leftHand)
         return leftHand;
     } catch (e) {
         console.error(e);
