@@ -128,7 +128,8 @@ const init = function (object) {
       const paddingY = 50;
       context.fillText("Source Error", 20 + paddingX, 80 + paddingY);
       if(object.YUGOmode == 0){
-        frame.src = 'http://localhost:5000/get-image?n='+Math.floor(Math.random()*10000000);
+        i++;
+        frame.src = 'http://localhost:5000/get-image?n='+i;
         context.drawImage(frame, 0, 45, 640, 270);
         
       }
