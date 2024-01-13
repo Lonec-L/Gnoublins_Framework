@@ -3,6 +3,20 @@ import { loadObject } from "../utils/loadObject.mjs";
 import { scene } from "../main.js";
 import * as THREE from "three";
 
+function getLeftHand() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(scene.getObjectByName("leftHand"));
+    }, 2000);
+  });
+}
+function getRightHand() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(scene.getObjectByName("rightHand"));
+    }, 2000);
+  });
+}
 const init = function (object) {
   object.position.y = -0.28;
   object.position.z = 0.51;
@@ -16,7 +30,6 @@ const init = function (object) {
   object.roadSigns = [];
   object.voiceCommands = ["Pause", "Skip", "Continue", "Play Song", "Mute", "Louder", "Quieter"];
   object.roadSignsAI = [];
-  object.YUGOmode = 0;
 
   // Load an image
   const image = new Image();
@@ -84,15 +97,27 @@ const init = function (object) {
       };
     }
   }
-
-
+  
+  
+  
   //YUGO variables
   var frame = new Image();
   frame.crossOrigin = "anonymous";
   var i = 0;
 
+  var running = false;
+
   let izpis = "RADIO:OFF   AC:OFF   CONSUMPTION:7.9"; // Your variable
   let recording = "";
+  
+  var leftHand;
+  getLeftHand().then((value) => {
+    leftHand = value;
+  });
+  var rightHand;
+  getRightHand().then((value) => {
+    rightHand = value;
+  });
 
   // webcam
   const video = document.createElement('video');
@@ -111,6 +136,7 @@ navigator.mediaDevices
     function gotStream(stream) {
     video.srcObject = stream;
     }
+
   // Will update the texture
   object.update = function () {
     var canvas = document.createElement("canvas");
@@ -149,13 +175,37 @@ navigator.mediaDevices
       const paddingX = 25;
       const paddingY = 50;
       context.fillText("Source Error", 20 + paddingX, 80 + paddingY);
-      if(object.YUGOmode == 0){
+      if(running){
         i++;
         frame.src = 'http://localhost:5000/get-image?n='+i;
         context.drawImage(frame, 0, 45, 640, 270);
-      }else if(object.YUGOmode == 1){
+      }else{
         if (video.readyState >= video.HAVE_ENOUGH_DATA) {
-          context.drawImage(video, 0, 0, 640, 360);
+        context.drawImage(video, 0, 0, 640, 360);
+      }
+      if(leftHand.visible == false || rightHand.visible == false){
+        if(leftHand.visible == false){
+          context.font = "bold 48px Arial";
+          context.fillStyle = "red";
+          context.fillText("Left", 10, 50,610);
+        }else{
+          context.font = "bold 48px Arial";
+          context.fillStyle = "green";
+          context.fillText("Left", 10, 50,610);
+        }
+        if(rightHand.visible == false){
+          context.font = "bold 48px Arial";
+          context.fillStyle = "red";
+          context.fillText("Right", 505, 50,610);
+        }else{
+          context.font = "bold 48px Arial";
+          context.fillStyle = "green";
+          context.fillText("Right", 505, 50,610);
+        }
+      }
+      else {
+          running = true;
+          // TODO capture camera and send to NN
       }
       context.font = "bold 30px Arial"; // Adjust the size as needed
       context.fillStyle = "black"; // Text color
