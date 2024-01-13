@@ -1,5 +1,6 @@
 import { httpGetAsync } from "../utils/httpGetAsync.mjs";
 import { loadObject } from "../utils/loadObject.mjs";
+import { scene } from "../main.js";
 import * as THREE from "three";
 
 const init = function (object) {
