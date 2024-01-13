@@ -5,7 +5,7 @@ export const addObject = async (scene, gui, objectName, loadFunction) => {
         console.error("Object " + objectName + " is undefined");
         return;
     }
-    object.visible = true;
+    //object.visible = true;
     scene.add(object);
     gui.add(object, 'visible').name(objectName).onFinishChange(async function (value) {
         if (!value) {
