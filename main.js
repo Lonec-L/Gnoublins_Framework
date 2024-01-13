@@ -171,7 +171,9 @@ addEvent(document, "keypress", function (e) {
 
 function render(time) {
   time = ( time / 1000 ) * 2.0;
-  requestAnimationFrame(render);
+  setTimeout( function() {
+    requestAnimationFrame(render);
+  }, 1000 / 30 );
   for (let i = 0; i < scene.children.length; i++) {
     if (scene.children[i].update) {
       scene.children[i].update();
