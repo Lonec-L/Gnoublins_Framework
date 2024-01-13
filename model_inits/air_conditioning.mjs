@@ -49,8 +49,8 @@ function handleSuccess(data) {
 
 const init = function (object) {
     object.position.y = -0.55;
-    object.position.z = 0.44;
-    object.position.x = 0.9;
+    object.position.z = 0.43;
+    object.position.x = 0.83;
     //object.rotation.x = Math.PI / 2;
     object.rotation.y = Math.PI;
     object.scale.set(1.9, 1.9, 1.9);
