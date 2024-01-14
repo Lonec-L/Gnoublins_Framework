@@ -41,7 +41,7 @@ function handleSuccess(data) {
     }
     if(radio_on)radioStatus = radio_kanali[kanal];
     const newText = `RADIO:${radioStatus}   AC:${acStatus}   CONSUMPTION:${consumption}`;
-
+    console.log(newText);
     updateIzpis(newText, "");
 
 }
@@ -62,7 +62,7 @@ const init = function (object) {
 
              object.children[i].onClicked = function () {
                  console.log("dial clicked");
-                 updateIzpis("","Recording...");
+                 //updateIzpis("","Recording...");
                     //ob pritisku sprozi snemanje na serverju:
                     fetch('http://127.0.0.1:5000/start_recording', {
                     method: 'POST',
