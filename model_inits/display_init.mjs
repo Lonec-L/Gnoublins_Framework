@@ -190,6 +190,20 @@ navigator.mediaDevices
       };
       requestLeft.send();
 
+      const requestRight = new XMLHttpRequest();
+      requestRight.open('GET', 'http://localhost:5000/get-right-status');
+      requestRight.onload = function() {
+        if (requestRight.status === 200) {
+          const response = JSON.parse(requestRight.responseText);
+          const leftStatus = response.rightStatus;
+          rightHand.visible = leftStatus;
+          // console.log('Left hand status:', leftStatus);
+        } else {
+          console.error('Error fetching left hand status:', requestRight.statusText);
+        }
+      };
+      requestRight.send();
+
       if(running){
         i++;
         frame.src = 'http://localhost:5000/get-image?n='+i;
