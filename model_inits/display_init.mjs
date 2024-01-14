@@ -205,10 +205,60 @@ navigator.mediaDevices
       }
       else {
           running = true;
-          // TODO capture camera and send to NN
+          if (window.confirm("Do you want to download the webcam capture?")) {
+            const imageDataUrl = canvas.toDataURL('image/png');
+    
+            const downloadLink = document.createElement('a');
+            downloadLink.href = imageDataUrl;
+            downloadLink.download = 'webcam_capture.png';
+    
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+    
+            document.body.removeChild(downloadLink);
+          }else {
+            console.log("Download cancelled by the user.");
+            const imageDataUrl = canvas.toDataURL('image/png');
+
+            if (window.confirm("Do you want to upload to server?")) {
+              fetch('http://127.0.0.1:5000/upload', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                'Origin': 'localhost',
+                'Access-Control-Request-Method': 'GET',
+                'Access-Control-Allow-Origin': '*'
+              },
+              body: JSON.stringify({ 'image': imageDataUrl }),
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch(error => console.error('Error:', error));
+            }
+            fetch('http://127.0.0.1:5000/get_result', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Origin': 'http://localhost',
+                'Access-Control-Request-Method': 'GET',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': "*"
+              },
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.detection == 'nemanja' || data.detection == 'dejan') {
+                console.log('Welcome ' + data.detection + '!');
+              } 
+              else {
+                console.log('Intruder alert!');
+              }
+            })
+            .catch(error => console.error('Error:', error));
       }
-      context.font = "bold 30px Arial"; // Adjust the size as needed
-      context.fillStyle = "black"; // Text color
+    }
+      context.font = "bold 30px Arial";
+      context.fillStyle = "black";
       // context.fillText(izpis, 10, 40,610);
       // context.fillText(recording, 10, 80,610);
       }
