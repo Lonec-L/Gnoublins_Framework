@@ -175,92 +175,108 @@ navigator.mediaDevices
       const paddingX = 25;
       const paddingY = 50;
       context.fillText("Source Error", 20 + paddingX, 80 + paddingY);
+
+      const requestLeft = new XMLHttpRequest();
+      requestLeft.open('GET', 'http://localhost:5000/get-left-status');
+      requestLeft.onload = function() {
+        if (requestLeft.status === 200) {
+          const response = JSON.parse(requestLeft.responseText);
+          const leftStatus = response.leftStatus;
+          leftHand.visible = leftStatus;
+          // console.log('Left hand status:', leftStatus);
+        } else {
+          console.error('Error fetching left hand status:', requestLeft.statusText);
+        }
+      };
+      requestLeft.send();
+
       if(running){
         i++;
         frame.src = 'http://localhost:5000/get-image?n='+i;
         context.drawImage(frame, 0, 45, 640, 270);
       }else{
         if (video.readyState >= video.HAVE_ENOUGH_DATA) {
-        context.drawImage(video, 0, 0, 640, 360);
-      }
-      if(leftHand.visible == false || rightHand.visible == false){
-        if(leftHand.visible == false){
-          context.font = "bold 48px Arial";
-          context.fillStyle = "red";
-          context.fillText("Left", 10, 50,610);
-        }else{
-          context.font = "bold 48px Arial";
-          context.fillStyle = "green";
-          context.fillText("Left", 10, 50,610);
+          context.drawImage(video, 0, 0, 640, 360);
         }
-        if(rightHand.visible == false){
-          context.font = "bold 48px Arial";
-          context.fillStyle = "red";
-          context.fillText("Right", 505, 50,610);
-        }else{
-          context.font = "bold 48px Arial";
-          context.fillStyle = "green";
-          context.fillText("Right", 505, 50,610);
-        }
-      }
-      else {
-          running = true;
-          if (window.confirm("Do you want to download the webcam capture?")) {
-            const imageDataUrl = canvas.toDataURL('image/png');
-    
-            const downloadLink = document.createElement('a');
-            downloadLink.href = imageDataUrl;
-            downloadLink.download = 'webcam_capture.png';
-    
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-    
-            document.body.removeChild(downloadLink);
-          }else {
-            console.log("Download cancelled by the user.");
-            const imageDataUrl = canvas.toDataURL('image/png');
 
-            if (window.confirm("Do you want to upload to server?")) {
-              fetch('http://127.0.0.1:5000/upload', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                'Origin': 'localhost',
-                'Access-Control-Request-Method': 'GET',
-                'Access-Control-Allow-Origin': '*'
-              },
-              body: JSON.stringify({ 'image': imageDataUrl }),
-            })
-            .then(response => response.json())
-            .then(data => console.log('Success:', data))
-            .catch(error => console.error('Error:', error));
-            }
-            fetch('http://127.0.0.1:5000/get_result', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Origin': 'http://localhost',
-                'Access-Control-Request-Method': 'GET',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': "*"
-              },
-            })
-            .then(response => response.json())
-            .then(data => {
-              if (data.detection == 'nemanja' || data.detection == 'dejan') {
-                console.log('Welcome ' + data.detection + '!');
-              } 
-              else {
-                console.log('Intruder alert!');
+        if(leftHand.visible == false || rightHand.visible == false){
+          if(leftHand.visible == false){
+            context.font = "bold 48px Arial";
+            context.fillStyle = "red";
+            context.fillText("Left", 10, 50,610);
+          }else{
+            context.font = "bold 48px Arial";
+            context.fillStyle = "green";
+            context.fillText("Left", 10, 50,610);
+          }
+          if(rightHand.visible == false){
+            context.font = "bold 48px Arial";
+            context.fillStyle = "red";
+            context.fillText("Right", 505, 50,610);
+          }else{
+            context.font = "bold 48px Arial";
+            context.fillStyle = "green";
+            context.fillText("Right", 505, 50,610);
+          }
+        }
+        else {
+            running = true;
+            if (window.confirm("Do you want to download the webcam capture?")) {
+              const imageDataUrl = canvas.toDataURL('image/png');
+      
+              const downloadLink = document.createElement('a');
+              downloadLink.href = imageDataUrl;
+              downloadLink.download = 'webcam_capture.png';
+      
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+      
+              document.body.removeChild(downloadLink);
+            }else {
+              console.log("Download cancelled by the user.");
+              const imageDataUrl = canvas.toDataURL('image/png');
+
+              if (window.confirm("Do you want to upload to server?")) {
+                fetch('http://127.0.0.1:5000/upload', {
+                  method: 'POST',
+                  headers: {
+                  'Content-Type': 'application/json',
+                  'Origin': 'localhost',
+                  'Access-Control-Request-Method': 'GET',
+                  'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 'image': imageDataUrl }),
+              })
+              .then(response => response.json())
+              .then(data => console.log('Success:', data))
+              .catch(error => console.error('Error:', error));
               }
-            })
-            .catch(error => console.error('Error:', error));
+              fetch('http://127.0.0.1:5000/get_result', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Origin': 'http://localhost',
+                  'Access-Control-Request-Method': 'GET',
+                  'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Headers': "*"
+                },
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.detection == 'nemanja' || data.detection == 'dejan') {
+                  console.log('Welcome ' + data.detection + '!');
+                } 
+                else {
+                  console.log('Intruder alert!');
+                }
+              })
+              .catch(error => console.error('Error:', error));
+        }
       }
-    }
-      context.font = "bold 30px Arial";
-      context.fillStyle = "black";
-      // context.fillText(izpis, 10, 40,610);
-      // context.fillText(recording, 10, 80,610);
+        context.font = "bold 30px Arial";
+        context.fillStyle = "black";
+        // context.fillText(izpis, 10, 40,610);
+        // context.fillText(recording, 10, 80,610);
       }
     }
 
