@@ -7,28 +7,33 @@ const init = function (object) {
     object.position.x = 0.83; // premik levo desno
     object.scale.set(2, 2, 1.6);
 
-    // Find the child by name
     const windshieldChild = object.getObjectByName('Carosserie_.005');
 
     if (windshieldChild) {
-        // Adjust transparency
         windshieldChild.material.transparent = true;
-        windshieldChild.material.opacity = 0.5; // Adjust opacity as needed
+        windshieldChild.material.opacity = 0.5;
     } else {
         console.warn("Child with name 'Carosserie_.005' not found.");
     }
 
-        // Find the child by name
-        const mirrorChild = object.getObjectByName('Mirror');
+    const mirrorChild = object.getObjectByName('Circle.009');
 
-        if (mirrorChild) {
-            // Adjust reflectiveness
-            mirrorChild.material.envMap = /* Set your environment map here */ null; // You might need to provide an environment map
-            mirrorChild.material.reflectivity = 0.8; // Adjust reflectivity as needed
-        } else {
-            console.warn("Child with name 'Mirror' not found.");
-        }
-    
+    if (mirrorChild) {
+        mirrorChild.material.envMap = null;
+        mirrorChild.material.reflectivity = 0.8;
+    } else {
+        console.warn("Child with name 'Circle.009' not found.");
+    }
+
+    const windowChild = object.getObjectByName('Circle.010');
+
+    if (windowChild) {
+        windowChild.material.transparent = true;
+        windowChild.material.opacity = 0.5;
+    } else {
+        console.warn("Child with name 'Circle.010' not found.");
+    }
+
 }
 
 export const loadShelby = async () => {

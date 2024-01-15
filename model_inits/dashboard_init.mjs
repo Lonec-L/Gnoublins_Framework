@@ -61,6 +61,14 @@ const init = function (object) { // this function could be further split up into
                 }
             }
         }
+        else if (object.children[i].name === "Armaturka") {
+            object.children[i].material[0] = new THREE.MeshPhongMaterial({
+                color: 0x666666,
+                specular: 0x888888,
+                shininess: 250,
+                side: THREE.DoubleSide,
+            });
+        }
     }
 
     object.update = function () {

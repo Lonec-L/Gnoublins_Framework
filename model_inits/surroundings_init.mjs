@@ -12,10 +12,10 @@ const createCanvasPlane = function () {
 
     const planeMesh = new THREE.Mesh(geometry, material);
 
-    planeMesh.position.x = 1;
-    planeMesh.position.y = 1.5;
+    planeMesh.position.x = 3;
+    planeMesh.position.y = 2;
     planeMesh.position.z = -5;
-    planeMesh.scale.set(0.5, 0.5, 0.5);
+    planeMesh.scale.set(1, 1, 1);
 
     return planeMesh;
 };

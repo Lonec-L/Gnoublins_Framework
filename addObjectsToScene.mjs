@@ -14,11 +14,11 @@ export const addObjectsToScene = async (scene, gui) => {
     addObject(scene, gui, "Dashboard", loadDashboard);
     addObject(scene, gui, "Middle storage", loadMiddleStorage);
     addObject(scene, gui, "Panel", loadPanel);
-    addObject(scene, gui, "Break", loadBreak);
+    // addObject(scene, gui, "Break", loadBreak);
     addObject(scene, gui, "Display", loadDisplay);
-    addObject(scene, gui, "Gas Pedal", loadGasPedal);
-    addObject(scene, gui, "Handbrake", loadHandbrake);
-    addObject(scene, gui, "Clutch Pedal", loadClutchPedal);
+    // addObject(scene, gui, "Gas Pedal", loadGasPedal);
+    // addObject(scene, gui, "Handbrake", loadHandbrake);
+    // addObject(scene, gui, "Clutch Pedal", loadClutchPedal);
     addObject(scene, gui, "Surroundings", loadSurroundings);
     addObject(scene, gui, "Shelby", loadShelby);
 }
