@@ -33,6 +33,16 @@ const init = function (object) {
     } else {
         console.warn("Child with name 'Circle.010' not found.");
     }
+
+    const portesChild = object.getObjectByName('Portes');
+
+    if (portesChild) {
+        portesChild.material.envMap = null;
+        portesChild.material.reflectivity = 0.8;
+        portesChild.material.transparent = false;
+    } else {
+        console.warn("Child with name 'Portes' not found.");
+    }
 }
 
 export const loadShelby = async () => {

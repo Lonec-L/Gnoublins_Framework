@@ -1,4 +1,3 @@
-import { httpGetAsync } from '../utils/httpGetAsync.mjs';
 import * as THREE from 'three';
 
 const createCanvasPlane = function () {
@@ -13,9 +12,9 @@ const createCanvasPlane = function () {
     const planeMesh = new THREE.Mesh(geometry, material);
 
     planeMesh.position.x = 3;
-    planeMesh.position.y = 2;
-    planeMesh.position.z = -5;
-    planeMesh.scale.set(1, 1, 1);
+    planeMesh.position.y = 8;
+    planeMesh.position.z = -10;
+    planeMesh.scale.set(1.8, 1.8, 1.8);
 
     return planeMesh;
 };
