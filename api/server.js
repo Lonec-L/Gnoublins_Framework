@@ -48,6 +48,7 @@ speedLimitsConsumer.subscribe({ topic: 'speed_limits_data', fromBeginning: false
                 const data = message.value.toString().split('|');
                 latestNumericalData[0] = parseInt(data[0]);  // Speed limit
                 latestNumericalData[2] = parseInt(data[1]);  // Driver score
+                console.log(latestNumericalData);
             },
         });
     })
@@ -83,8 +84,6 @@ app.get('/image', (req, res) => {
 
         res.setHeader('Content-Type', 'image/jpeg');
 
-        console.log('Sending frame: ', metadata);
-        
         res.end(frameBuffer);
     } else {
         res.status(404).send('No frame available');

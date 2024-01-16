@@ -33,7 +33,6 @@ const init = function (object) {
     } else {
         console.warn("Child with name 'Circle.010' not found.");
     }
-
 }
 
 export const loadShelby = async () => {
