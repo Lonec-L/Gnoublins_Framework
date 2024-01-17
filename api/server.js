@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-
+const Redis = require('ioredis');
+const redis = new Redis(6379);
 const app = express();
 const port = 3011;
 
@@ -40,16 +41,18 @@ client.on("message", (topic, message) => {
             gnoublins_data[2] = parseInt(m[1]);
         console.log(gnoublins_data);
     }
+    if (t == "OnConstructionSite") {
+        gnoublins_data[0] = parseInt(m[0]);
+    }
 });
 
 app.get('/dashboard_lights_data', (req, res) => {
-    // TODO: Get the data from kafka/redis
-    gnoublins_data[0] = Math.floor(Math.random() * 2);     // Dashboard lights random
-
     res.json({ data: gnoublins_data });
 });
 
-app.get('/image', (req, res) => {
+const jpeg = require("jpeg-js");
+
+app.get('/image', async (req, res) => {
     // TODO: Get the data from kafka/redis
 
     try {
@@ -57,8 +60,43 @@ app.get('/image', (req, res) => {
 
         res.setHeader('Content-Type', 'image/jpeg');
         res.setHeader('Content-Disposition', 'inline; filename=image.jpg');
-
         res.sendFile(imagePath);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.get('/imageFromRedis', async (req, res) => {
+    try {
+
+        const frameBuffer = await redis.getBuffer('frame:latest');
+        var array = new Uint8Array(frameBuffer);
+
+        var frameData = new Buffer.alloc(960 * 540 * 4, 0xff);
+
+        var j = 0;
+        for (var i = 0; i < array.length; i += 3) {
+            var temp = array[i + 2];
+            array[i + 2] = array[i];
+            array[i] = temp;
+
+            frameData[j] = array[i];
+            frameData[j + 1] = array[i + 1];
+            frameData[j + 2] = array[i + 2];
+            j += 4;
+        }
+        var rawImageData = {
+            data: frameData,
+            width: 960,
+            height: 540
+        };
+
+        var jpegImageData = jpeg.encode(rawImageData, 50);
+
+        res.setHeader('Content-Type', 'image/jpeg');
+        console.log("jpeg");
+        res.end(jpegImageData.data);
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
