@@ -3,6 +3,10 @@ import { loadObject } from "../utils/loadObject.mjs";
 import { scene } from "../main.js";
 import * as THREE from "three";
 
+let acStatus = "OFF";
+let radioStatus = "OFF";
+let con = "6.8";
+
 function getLeftHand() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -107,6 +111,7 @@ const init = function (object) {
 
   var running = false;
 
+
   let izpis = "RADIO:OFF   AC:OFF   CONSUMPTION:7.9"; // Your variable
   let recording = "";
   
@@ -208,6 +213,11 @@ navigator.mediaDevices
         i++;
         frame.src = 'http://localhost:5000/get-image?n='+i;
         context.drawImage(frame, 0, 45, 640, 270);
+        context.font = "bold 40px Arial";
+        context.fillStyle = "white";
+        context.fillText("RADIO: " + radioStatus, 10, 38, 610);
+        context.fillText("AC: " + acStatus, 270, 38, 610);
+        context.fillText("CON: " + con, 460, 38, 610);
       }else{
         if (video.readyState >= video.HAVE_ENOUGH_DATA) {
           context.drawImage(video, 0, 0, 640, 360);
@@ -331,9 +341,8 @@ export const loadDisplay = async () => {
   return;
 };
 
-export function updateIzpis(newText, recording1) {
-  if(newText != "") {
-  izpis = newText;
-  }
-  recording = recording1;
+export function updateIzpis(r, ac, c) {
+  radioStatus = r;
+  acStatus = ac;
+  con = c;
 }

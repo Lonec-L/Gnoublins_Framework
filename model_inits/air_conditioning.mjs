@@ -40,9 +40,9 @@ function handleSuccess(data) {
         radio_on = 0;
     }
     if(radio_on)radioStatus = radio_kanali[kanal];
-    const newText = `RADIO:${radioStatus}   AC:${acStatus}   CONSUMPTION:${consumption}`;
-    console.log(newText);
-    updateIzpis(newText, "");
+    //const newText = `RADIO:${radioStatus}   AC:${acStatus}   CONSUMPTION:${consumption}`;
+    //console.log(newText);
+    updateIzpis(radioStatus, acStatus, consumption);
 
 }
 
@@ -94,6 +94,8 @@ const init = function (object) {
     
 
 }
+
+
 
 export const loadAirConditioning = async () => {
     try {
