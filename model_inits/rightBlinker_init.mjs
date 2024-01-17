@@ -13,8 +13,8 @@ const init = function (object) {
     object.scale.set(1.25, 1.25, 2.5);
 
     object.getData = function () {
-        httpGetAsync("http://localhost:3011/data", function (response) {
-            object.blinkers = JSON.parse(response).data[4];
+        httpGetAsync("http://localhost:8080/poll_data", function (response) {
+            object.blinkers = response;
         });
         object.dataTimeoutID = setTimeout(object.getData, 1500);
         console.log(object.blinkers);
