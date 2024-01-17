@@ -60,30 +60,30 @@ addLight(0.08, 0.8, 0.5, -12, 11, -10);
 
 
 // panorama 
-const panoSphereGeo = new THREE.SphereGeometry( 20, 256, 256 );
+const panoSphereGeo = new THREE.SphereGeometry(200, 256, 256);
 
-const panoSphereMat = new THREE.MeshStandardMaterial( {
-side: THREE.BackSide,
-displacementScale: - 6.0
-} );
+const panoSphereMat = new THREE.MeshStandardMaterial({
+  side: THREE.BackSide,
+  displacementScale: - 6.0
+});
 
-let sphere = new THREE.Mesh( panoSphereGeo, panoSphereMat );
+let sphere = new THREE.Mesh(panoSphereGeo, panoSphereMat);
 sphere.rotation.y = 1.4;
 sphere.rotation.x = 0.2;
 
 const manager = new THREE.LoadingManager();
-const loader = new THREE.TextureLoader( manager );
+const loader = new THREE.TextureLoader(manager);
 
-loader.load( './textures/kandao5.jpg', function ( texture ) {
+loader.load('./textures/kandao5.jpg', function (texture) {
 
-texture.colorSpace = THREE.SRGBColorSpace;
-texture.minFilter = THREE.NearestFilter;
-texture.generateMipmaps = false;
-sphere.material.map = texture;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.NearestFilter;
+  texture.generateMipmaps = false;
+  sphere.material.map = texture;
 
-} );
+});
 
-scene.add( sphere );
+scene.add(sphere);
 
 const bloomParams = {
   threshold: 0,
@@ -194,15 +194,14 @@ addEvent(document, "keypress", function (e) {
 });
 
 function render(time) {
-  time = ( time / 1000 ) * 2.0;
+  time = (time / 1000) * 2.0;
   requestAnimationFrame(render);
   for (let i = 0; i < scene.children.length; i++) {
     if (scene.children[i].update) {
       scene.children[i].update();
     }
-    if(scene.children[i].name == "spotlight")
-    {
-        scene.children[i].position.y = Math.sin(time);
+    if (scene.children[i].name == "spotlight") {
+      scene.children[i].position.y = Math.sin(time);
     }
   }
   if (camera.toggle) {
