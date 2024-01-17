@@ -107,10 +107,7 @@ const init = function (object) {
       const paddingX = 25;
       const paddingY = 50;
       context.fillText("Voice command:", 20 + paddingX, 80 + paddingY);
-      if (object.speed_limit > 6) {
-        object.speed_limit -= 3;
-      }
-      context.fillText(object.voiceCommands[object.speed_limit], 20 + paddingX, 240 + paddingY);
+      context.fillText(object.voiceCommands[object.voiceCommandID], 20 + paddingX, 240 + paddingY);
     } else if (object.screens[object.screenIndex] == "DetectedRoadSigns") {
       const paddingX = 25;
       const paddingY = 50;
@@ -130,6 +127,7 @@ const init = function (object) {
       object.driver_score = JSON.parse(response).data[2];
       object.rpm = JSON.parse(response).data[3];
       object.roadSignsID = JSON.parse(response).data[5];
+      object.voiceCommandID = JSON.parse(response).data[6];
     });
     object.dataTimeoutID = setTimeout(object.getData, 333);
   };
