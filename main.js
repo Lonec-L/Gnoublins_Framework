@@ -56,10 +56,34 @@ const textureLoader = new THREE.TextureLoader();
 const textureFlare0 = textureLoader.load("textures/lensflare0.png");
 const textureFlare3 = textureLoader.load("textures/lensflare3.png");
 
-//addLight(0.55, 0.9, 0.5, 5000, 0, -1000);
-addLight(0.08, 0.8, 0.5, -12, 7, -10);
-//addLight(0.995, 0.5, 0.9, 5000, 5000, -1000);
+addLight(0.08, 0.8, 0.5, -12, 11, -10);
 
+
+// panorama 
+const panoSphereGeo = new THREE.SphereGeometry( 20, 256, 256 );
+
+const panoSphereMat = new THREE.MeshStandardMaterial( {
+side: THREE.BackSide,
+displacementScale: - 6.0
+} );
+
+let sphere = new THREE.Mesh( panoSphereGeo, panoSphereMat );
+sphere.rotation.y = 1.4;
+sphere.rotation.x = 0.2;
+
+const manager = new THREE.LoadingManager();
+const loader = new THREE.TextureLoader( manager );
+
+loader.load( './textures/kandao5.jpg', function ( texture ) {
+
+texture.colorSpace = THREE.SRGBColorSpace;
+texture.minFilter = THREE.NearestFilter;
+texture.generateMipmaps = false;
+sphere.material.map = texture;
+
+} );
+
+scene.add( sphere );
 
 const bloomParams = {
   threshold: 0,
