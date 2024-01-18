@@ -37,9 +37,13 @@ const init = function (object) {
     const portesChild = object.getObjectByName('Portes');
 
     if (portesChild) {
-        portesChild.material.envMap = null;
-        portesChild.material.reflectivity = 0.8;
-        portesChild.material.transparent = false;
+        console.log("Portes child found");
+        console.log(portesChild);
+        // if (portesChild.material) {
+        //     portesChild.material.side = THREE.DoubleSide;
+        // } else {
+        //     console.log("Portes child has no material");
+        // }
     } else {
         console.warn("Child with name 'Portes' not found.");
     }
