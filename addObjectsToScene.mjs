@@ -11,6 +11,8 @@ import { loadSurroundings } from './model_inits/surroundings_init.mjs';
 import { loadLeftBlinker } from './model_inits/leftBlinker_init.mjs';
 import { loadRightBlinker } from './model_inits/rightBlinker_init.mjs';
 import { loadAirConditioning } from './model_inits/air_conditioning.mjs';
+import { loadWindscreenWiperLever } from './model_inits/windscreen_wiper_lever.mjs';//dejan
+
 import { loadLeftHand } from './model_inits/leftHand.mjs';
 import { loadRightHand } from './model_inits/rightHand.mjs';
 import { loadReflector } from './reflector.mjs';
@@ -33,5 +35,7 @@ export const addObjectsToScene = async (scene, gui) => {
     addObject(scene, gui, "AC", loadAirConditioning);
     addObject(scene, gui, "LeftHand", loadLeftHand);
     addObject(scene, gui, "RightHand", loadRightHand);
+    addObject(scene, gui, "Windscreen Wiper Lever", loadWindscreenWiperLever);
+
 }
 

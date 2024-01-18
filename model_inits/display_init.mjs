@@ -213,7 +213,7 @@ navigator.mediaDevices
         i++;
         frame.src = 'http://localhost:5000/get-image?n='+i;
         context.drawImage(frame, 0, 45, 640, 270);
-        context.font = "bold 40px Arial";
+        context.font = "bold 30px Arial";
         context.fillStyle = "white";
         context.fillText("RADIO: " + radioStatus, 10, 38, 610);
         context.fillText("AC: " + acStatus, 270, 38, 610);
@@ -245,22 +245,22 @@ navigator.mediaDevices
         }
         else {
             running = true;
-            if (window.confirm("Do you want to download the webcam capture?")) {
-              const imageDataUrl = canvas.toDataURL('image/png');
+            // if (window.confirm("Do you want to download the webcam capture?")) {
+            //   const imageDataUrl = canvas.toDataURL('image/png');
       
-              const downloadLink = document.createElement('a');
-              downloadLink.href = imageDataUrl;
-              downloadLink.download = 'webcam_capture.png';
+            //   const downloadLink = document.createElement('a');
+            //   downloadLink.href = imageDataUrl;
+            //   downloadLink.download = 'webcam_capture.png';
       
-              document.body.appendChild(downloadLink);
-              downloadLink.click();
+            //   document.body.appendChild(downloadLink);
+            //   downloadLink.click();
       
-              document.body.removeChild(downloadLink);
-            }else {
+            //   document.body.removeChild(downloadLink);
+            // }else {
               console.log("Download cancelled by the user.");
               const imageDataUrl = canvas.toDataURL('image/png');
 
-              if (window.confirm("Do you want to upload to server?")) {
+              // if (window.confirm("Do you want to upload to server?")) {
                 fetch('http://127.0.0.1:5000/upload', {
                   method: 'POST',
                   headers: {
@@ -274,7 +274,7 @@ navigator.mediaDevices
               .then(response => response.json())
               .then(data => console.log('Success:', data))
               .catch(error => console.error('Error:', error));
-              }
+              // }
               fetch('http://127.0.0.1:5000/get_result', {
                 method: 'GET',
                 headers: {
@@ -295,7 +295,7 @@ navigator.mediaDevices
                 }
               })
               .catch(error => console.error('Error:', error));
-        }
+        //}
       }
         context.font = "bold 30px Arial";
         context.fillStyle = "black";
