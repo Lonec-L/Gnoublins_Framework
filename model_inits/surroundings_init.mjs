@@ -13,10 +13,11 @@ const createCanvasPlane = function () {
     
     const planeMesh = new THREE.Mesh(geometry, material);
 
-    planeMesh.position.x = 1;
-    planeMesh.position.y = 1.5;
-    planeMesh.position.z = -5;
-    planeMesh.scale.set(0.5, 0.5, 0.5);
+    planeMesh.position.x = 3;
+    planeMesh.position.y = 8;
+    planeMesh.position.z = -10;
+    planeMesh.scale.set(1.8, 1.8, 1.8);
+
 
     return planeMesh;
 };
@@ -42,19 +43,37 @@ const createEmptyCanvasTexture = function () {
 const textureLoader = new THREE.TextureLoader();
 
 const init = function (object) {
+    object.redisSource = false;
     object.update = function () {
-        if (object.image) {
+        if (object.loadTexture) {
+            object.loadTexture = false;
+            console.log("loading")
             textureLoader.load(object.image, function (texture) {
                 object.material.map = texture;
                 object.material.map.needsUpdate = true;
-                object.image = null;
+                object.image = undefined;
             });
+        }
+    }
+    object.onClicked = function () {
+        object.redisSource = !object.redisSource;
+        if (object.redisSource) {
+            object.position.y = 3;
+        } else {
+            object.position.y = 8;
         }
     }
 
     object.getData = function () {
-        object.image = "http://localhost:3011/image";
-        object.dataTimeoutID = setTimeout(object.getData, 33.3);
+        const timestamp = new Date().getTime();
+        object.loadTexture = true;
+        if (object.redisSource) {
+            object.image = `http://localhost:3011/imageFromRedis?timestamp=${timestamp}`;
+        } else {
+            object.image = `http://localhost:3011/image`;
+        }
+        // if (neka spremenljivka) pol `http://localhost:3011/image?timestamp=${timestamp}` else `http://localhost:3011/imageFromRedis?timestamp=${timestamp}`
+        setTimeout(object.getData, 100)
     }
     object.getData();
 

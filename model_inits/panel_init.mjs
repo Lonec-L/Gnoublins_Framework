@@ -8,7 +8,7 @@ const init = function (object) {
 
 export const loadPanel = async () => {
     try {
-        var panel = await loadObject("models/panel/panel.obj", "models/panel/panel.mtl");
+        var panel = await loadObject("models/panel/smooth_panel.obj", "models/panel/smooth_panel.mtl");
         init(panel)
         return panel;
     } catch (e) {
