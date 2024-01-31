@@ -8,13 +8,16 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-const scene = new THREE.Scene();
+export const scene = new THREE.Scene();
+
+
 var gui = new GUI();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const cameraRotationSpeed = 0.007;
+const cameraRotationSpeed = 0.03;
 camera.rotate_x_animation = 0;
 camera.rotate_y_animation = 0;
 camera.position.z = 1.5;
+camera.position.y = 0.2;
 camera.toggle = false;
 
 var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -194,8 +197,12 @@ addEvent(document, "keypress", function (e) {
 });
 
 function render(time) {
-  time = (time / 1000) * 2.0;
-  requestAnimationFrame(render);
+  time = ( time / 1000 ) * 2.0;
+  //fixed fps to 30
+  setTimeout( function() {
+    requestAnimationFrame(render);
+  }, 1000 / 30 );
+
   for (let i = 0; i < scene.children.length; i++) {
     if (scene.children[i].update) {
       scene.children[i].update();

@@ -1,7 +1,26 @@
 import { httpGetAsync } from "../utils/httpGetAsync.mjs";
 import { loadObject } from "../utils/loadObject.mjs";
+import { scene } from "../main.js";
 import * as THREE from "three";
 
+let acStatus = "OFF";
+let radioStatus = "OFF";
+let con = "6.8";
+
+function getLeftHand() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(scene.getObjectByName("leftHand"));
+    }, 2000);
+  });
+}
+function getRightHand() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(scene.getObjectByName("rightHand"));
+    }, 2000);
+  });
+}
 const init = function (object) {
   object.position.y = -0.28;
   object.position.z = 0.51;
@@ -10,7 +29,7 @@ const init = function (object) {
   object.rotation.y = Math.PI;
   object.scale.set(1.3, 1.3, 1.3);
 
-  object.screens = ["SpeedLimit", "VoiceCommands", "DetectedRoadSigns"];
+  object.screens = ["SpeedLimit", "VoiceCommands", "DetectedRoadSigns", "CollisionDetection"];
   object.screenIndex = 0;
   object.roadSigns = [];
   object.voiceCommands = ["Pause", "Skip", "Continue", "Play Song", "Mute", "Louder", "Quieter"];
@@ -82,6 +101,46 @@ const init = function (object) {
       };
     }
   }
+  
+  
+  
+  //YUGO variables
+  var frame = new Image();
+  frame.crossOrigin = "anonymous";
+  var i = 0;
+
+  var running = false;
+
+
+  let izpis = "RADIO:OFF   AC:OFF   CONSUMPTION:7.9"; // Your variable
+  let recording = "";
+  
+  var leftHand;
+  getLeftHand().then((value) => {
+    leftHand = value;
+  });
+  var rightHand;
+  getRightHand().then((value) => {
+    rightHand = value;
+  });
+
+  // webcam
+  const video = document.createElement('video');
+  video.autoplay = true;
+  video.muted = true;
+
+  var streamConstraints = {
+    video: { width: 640, height: 360 },
+};
+navigator.mediaDevices
+    .getUserMedia(streamConstraints)
+    .then(gotStream)
+    .catch(function (e) {
+        alert("Could not access webcam!");
+    });
+    function gotStream(stream) {
+    video.srcObject = stream;
+    }
 
   // Will update the texture
   object.update = function () {
@@ -114,11 +173,138 @@ const init = function (object) {
       context.fillText("Sign Detected:", 20 + paddingX, 80 + paddingY);
       context.putImageData(object.roadSignsAI[object.roadSignsID], 640 - 120 * 2 + paddingX, paddingY);
 
+    } else if (object.screens[object.screenIndex] == "CollisionDetection") {
+      const paddingX = 25;
+      const paddingY = 50;
+      context.fillText("Source Error", 20 + paddingX, 80 + paddingY);
+
+      const requestLeft = new XMLHttpRequest();
+      requestLeft.open('GET', 'http://localhost:5000/get-left-status');
+      requestLeft.onload = function() {
+        if (requestLeft.status === 200) {
+          const response = JSON.parse(requestLeft.responseText);
+          const leftStatus = response.leftStatus;
+          leftHand.visible = leftStatus;
+          // console.log('Left hand status:', leftStatus);
+        } else {
+          console.error('Error fetching left hand status:', requestLeft.statusText);
+        }
+      };
+      requestLeft.send();
+
+      const requestRight = new XMLHttpRequest();
+      requestRight.open('GET', 'http://localhost:5000/get-right-status');
+      requestRight.onload = function() {
+        if (requestRight.status === 200) {
+          const response = JSON.parse(requestRight.responseText);
+          const leftStatus = response.rightStatus;
+          rightHand.visible = leftStatus;
+          // console.log('Left hand status:', leftStatus);
+        } else {
+          console.error('Error fetching left hand status:', requestRight.statusText);
+        }
+      };
+      requestRight.send();
+
+      if(running){
+        i++;
+        frame.src = 'http://localhost:5000/get-image?n='+i;
+        context.drawImage(frame, 0, 45, 640, 270);
+        context.font = "bold 30px Arial";
+        context.fillStyle = "white";
+        context.fillText("RADIO: " + radioStatus, 10, 38, 610);
+        context.fillText("AC: " + acStatus, 270, 38, 610);
+        context.fillText("CON: " + con, 460, 38, 610);
+      }else{
+        if (video.readyState >= video.HAVE_ENOUGH_DATA) {
+          context.drawImage(video, 0, 0, 640, 360);
+        }
+
+        if(leftHand.visible == false || rightHand.visible == false){
+          if(leftHand.visible == false){
+            context.font = "bold 48px Arial";
+            context.fillStyle = "red";
+            context.fillText("Left", 10, 50,610);
+          }else{
+            context.font = "bold 48px Arial";
+            context.fillStyle = "green";
+            context.fillText("Left", 10, 50,610);
+          }
+          if(rightHand.visible == false){
+            context.font = "bold 48px Arial";
+            context.fillStyle = "red";
+            context.fillText("Right", 505, 50,610);
+          }else{
+            context.font = "bold 48px Arial";
+            context.fillStyle = "green";
+            context.fillText("Right", 505, 50,610);
+          }
+        }
+        else {
+            running = true;
+            // if (window.confirm("Do you want to download the webcam capture?")) {
+            //   const imageDataUrl = canvas.toDataURL('image/png');
+      
+            //   const downloadLink = document.createElement('a');
+            //   downloadLink.href = imageDataUrl;
+            //   downloadLink.download = 'webcam_capture.png';
+      
+            //   document.body.appendChild(downloadLink);
+            //   downloadLink.click();
+      
+            //   document.body.removeChild(downloadLink);
+            // }else {
+              console.log("Download cancelled by the user.");
+              const imageDataUrl = canvas.toDataURL('image/png');
+
+              // if (window.confirm("Do you want to upload to server?")) {
+                fetch('http://127.0.0.1:5000/upload', {
+                  method: 'POST',
+                  headers: {
+                  'Content-Type': 'application/json',
+                  'Origin': 'localhost',
+                  'Access-Control-Request-Method': 'GET',
+                  'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ 'image': imageDataUrl }),
+              })
+              .then(response => response.json())
+              .then(data => console.log('Success:', data))
+              .catch(error => console.error('Error:', error));
+              // }
+              fetch('http://127.0.0.1:5000/get_result', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Origin': 'http://localhost',
+                  'Access-Control-Request-Method': 'GET',
+                  'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Headers': "*"
+                },
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.detection == 'nemanja' || data.detection == 'dejan') {
+                  console.log('Welcome ' + data.detection + '!');
+                } 
+                else {
+                  console.log('Intruder alert!');
+                }
+              })
+              .catch(error => console.error('Error:', error));
+        //}
+      }
+        context.font = "bold 30px Arial";
+        context.fillStyle = "black";
+        // context.fillText(izpis, 10, 40,610);
+        // context.fillText(recording, 10, 80,610);
+      }
     }
 
     object.children[0].material.map = new THREE.CanvasTexture(canvas);
     object.children[0].material.map.needsUpdate = true;
   };
+  setInterval(() => object.update(), 1000 / 30);
 
   object.getData = function () {
     httpGetAsync("http://localhost:3011/data", function (response) {
@@ -152,3 +338,9 @@ export const loadDisplay = async () => {
   }
   return;
 };
+
+export function updateIzpis(r, ac, c) {
+  radioStatus = r;
+  acStatus = ac;
+  con = c;
+}

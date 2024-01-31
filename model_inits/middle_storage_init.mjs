@@ -57,7 +57,7 @@ export const loadMiddleStorage = async () => {
     try {
         var storage = await loadObject("models/middle_storage/car_storage_part.obj", "models/middle_storage/car_storage_part.mtl");
         init(storage)
-        console.log(storage);
+        //console.log(storage);
         return storage;
     } catch (e) {
         console.error(e);
